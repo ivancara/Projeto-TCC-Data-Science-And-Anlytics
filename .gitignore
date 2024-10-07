@@ -6402,3 +6402,5 @@ vnv/Lib/site-packages/tzdata-2024.2.dist-info/top_level.txt
 vnv/Lib/site-packages/tzdata-2024.2.dist-info/WHEEL
 vnv/Scripts/f2py.exe
 vnv/Scripts/numpy-config.exe
+*/__pycache__/*.cpython-312.pyc
+*.csv
