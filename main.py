@@ -5,7 +5,7 @@ class Main:
         self.dataTable = DataTable()
     
     def main(self):
-        self.dataTable.writeDataFrame()
+        self.dataTable.writeDataTableIntoFile()
         
 
 if __name__ == "__main__":
