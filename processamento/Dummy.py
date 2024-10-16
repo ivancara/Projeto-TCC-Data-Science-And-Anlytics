@@ -11,10 +11,8 @@ class Dummy():
             if column in self.data:
                self.data = pd.get_dummies(self.data, columns = [column], dtype=dtype)
 
-    def normalize(self):
-        self.data = self.data.str.normalize('NFC').str.encode('ascii', errors='ignore').str.decode('utf-8').str.upper()
-
     def splitColumn(self, column, sep):
         self.data[column] = self.data[column].str.split(sep)
         self.data = self.data.explode(column=column)
+        self.data = self.data.drop_duplicates().reset_index(drop=True)
 

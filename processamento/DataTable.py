@@ -1,13 +1,19 @@
 from processamento.FileUtils import FileUtils
 from processamento.Dummy import Dummy
+from processamento.NormalizeUtils import NormalizeUtils
+import pandas as pd
+
 class DataTable:
     def __init__(self):
+        self.normalizeUtils = NormalizeUtils()
         self.fileUtils=FileUtils()
-        self.fileUtilsFeelings=FileUtils()
+        self.fileUtilsFinal=FileUtils('data_final.csv')
+        self.fileUtilsFeelings=FileUtils('emocoes.csv')
         self.dataFrame = self.fileUtils.readFile()
-        self.dataFrameFeeling = self.fileUtilsFeelings.readFile('emocoes.csv', ';')    
+        self.dataFrameFeeling = self.fileUtilsFeelings.readFile(';')    
         self.dummy = Dummy(self.dataFrame)
         self.dummyFeeling = Dummy(self.dataFrameFeeling)
+        self.dataFrameFinal = pd.DataFrame()
         
     
     def dummies(self):
@@ -16,15 +22,21 @@ class DataTable:
         self.dummy.getDummy('escolaridade')
         self.dummy.getDummy('estado_civil')
         self.dummy.getDummy('renda_familiar_mensal')
-        self.dummy.getDummy('possui_depressao', applyMapping=self.Sim2Binary)
+        self.dummy.getDummy('possui_depressao', applyMapping=self.normalizeUtils.Sim2Binary)
         self.dummy.splitColumn('emocoes_conhecidas', ',| e | E ')
+        self.dummy.getDummy('emocoes_conhecidas', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_passado', ';')
+        self.dummy.getDummy('emocoes_lembranca_passado', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_transformada', ';')
+        self.dummy.getDummy('emocoes_lembranca_transformada', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_atual', ';')
+        self.dummy.getDummy('emocoes_lembranca_atual', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_atual_transformada_futuro', ';')
+        self.dummy.getDummy('emocoes_lembranca_atual_transformada_futuro', applyMapping=self.normalizeUtils.normalizeString)
         self.dataFrame = self.dummy.data
-        self.dummyFeeling.getDummy('tipo', applyMapping=self.dummyFeelingType)
-        
+        self.dummyFeeling.getDummy('tipo', applyMapping=self.normalizeUtils.dummyFeelingType)
+        self.dummyFeeling.getDummy('emocao', applyMapping=self.normalizeUtils.normalizeString)
+
     def rename(self):
         columns = {
                         'Carimbo de data/hora':'data_resposta'
@@ -51,25 +63,20 @@ class DataTable:
                         }
         self.dummy.data = self.dataFrame.rename(columns=columns)
 
+    def mergeDataFrames(self):
+        self.dataFrameFinal = pd.merge(self.dataFrame, self.dataFrameFeeling, how='right', left_on='emocoes_conhecidas', right_on='emocao', suffixes=('', '_conhecida'))
+        self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_passado', right_on='emocao', suffixes=('', '_lembranca_passado'))
+        self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_transformada', right_on='emocao', suffixes=('', '_lembranca_transformada'))
+        self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual', right_on='emocao', suffixes=('', '_lembranca_atual'))
+        self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual_transformada_futuro', right_on='emocao', suffixes=('', '_lembranca_atual_transformada_futuro'))
+        self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
+        self.dataFrameFinal = self.dataFrameFinal.drop(columns=['emocao', 'emocao_lembranca_passado', 'emocao_lembranca_transformada', 'emocao_lembranca_atual', 'emocao_lembranca_atual_transformada_futuro'])
         
     def writeDataTableIntoFile(self):
         self.rename()
         self.dummies()
+        self.mergeDataFrames()
         self.fileUtils.writeFile(self.dataFrame)
         self.fileUtilsFeelings.writeFile(self.dataFrameFeeling)
-    
-    def dummyFeelingType(self, text):
-        if text == "positivo":
-            return 1
-        elif text == "negativo":
-            return -1
-        else:
-            return 0
-    
-    def Sim2Binary(self, text):
-        if text == 'Sim':
-            return 1
-        elif text == 'Não':
-            return 0
-        else:
-            return text
+        self.fileUtilsFinal.writeFile(self.dataFrameFinal)
+   
