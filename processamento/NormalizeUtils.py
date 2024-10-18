@@ -5,11 +5,11 @@ class NormalizeUtils():
      
     def dummyFeelingType(self, text):
         if text == "positivo":
-            return 1
+            return 2
         elif text == "negativo":
-            return -1
-        else:
             return 0
+        else:
+            return 1
     
     def Sim2Binary(self, text):
         if text == 'Sim':

@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
 class Dummy():
 
     def __init__(self, data) -> None:
@@ -7,9 +8,12 @@ class Dummy():
     def getDummy(self, column,applyMapping=None, dtype='bool'):
         if applyMapping is not None:
             self.data[column] = self.data[column].map(applyMapping, na_action=None)
+            if is_numeric_dtype(self.data[column]):
+                self.data[column] = self.data[column].astype('int64')
         else:
             if column in self.data:
                self.data = pd.get_dummies(self.data, columns = [column], dtype=dtype)
+
 
     def splitColumn(self, column, sep):
         self.data[column] = self.data[column].str.split(sep)

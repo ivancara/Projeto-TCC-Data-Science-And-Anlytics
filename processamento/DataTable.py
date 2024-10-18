@@ -23,6 +23,7 @@ class DataTable:
         self.dummy.getDummy('estado_civil')
         self.dummy.getDummy('renda_familiar_mensal')
         self.dummy.getDummy('possui_depressao', applyMapping=self.normalizeUtils.Sim2Binary)
+        self.dummy.getDummy('terapia', applyMapping=self.normalizeUtils.Sim2Binary)
         self.dummy.splitColumn('emocoes_conhecidas', ',| e | E ')
         self.dummy.getDummy('emocoes_conhecidas', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_passado', ';')
@@ -69,8 +70,9 @@ class DataTable:
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_transformada', right_on='emocao', suffixes=('', '_lembranca_transformada'))
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual', right_on='emocao', suffixes=('', '_lembranca_atual'))
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual_transformada_futuro', right_on='emocao', suffixes=('', '_lembranca_atual_transformada_futuro'))
-        self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
         self.dataFrameFinal = self.dataFrameFinal.drop(columns=['emocao', 'emocao_lembranca_passado', 'emocao_lembranca_transformada', 'emocao_lembranca_atual', 'emocao_lembranca_atual_transformada_futuro'])
+        self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
+        #self.dataFrameFinal = self.dataFrameFinal.notna()
         
     def writeDataTableIntoFile(self):
         self.rename()
