@@ -6404,3 +6404,10 @@ vnv/Scripts/f2py.exe
 vnv/Scripts/numpy-config.exe
 */__pycache__/*.cpython-312.pyc
 *.csv
+processamento/TextAnalysis/__pycache__/GPReviewDataset.cpython-312.pyc
+processamento/TextAnalysis/__pycache__/SentimentClassifier.cpython-312.pyc
+best_model_state.bin
+processamento/TextAnalysis/__pycache__/FactDataset.cpython-312.pyc
+utils/constants/__pycache__/AppConfig.cpython-312.pyc
+processamento/TextAnalysis/__pycache__/TrainingFeelingAnalysis.cpython-312.pyc
+processamento/TextAnalysis/__pycache__/DataLoaderSentimentAnalysis.cpython-312.pyc
