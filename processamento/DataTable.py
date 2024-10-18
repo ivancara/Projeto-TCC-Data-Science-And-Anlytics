@@ -72,7 +72,7 @@ class DataTable:
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual_transformada_futuro', right_on='emocao', suffixes=('', '_lembranca_atual_transformada_futuro'))
         self.dataFrameFinal = self.dataFrameFinal.drop(columns=['emocao', 'emocao_lembranca_passado', 'emocao_lembranca_transformada', 'emocao_lembranca_atual', 'emocao_lembranca_atual_transformada_futuro'])
         self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
-        #self.dataFrameFinal = self.dataFrameFinal.notna()
+        self.dataFrameFinal = self.dataFrameFinal.fillna(0)
         
     def writeDataTableIntoFile(self):
         self.rename()
