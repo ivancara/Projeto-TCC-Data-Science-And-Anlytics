@@ -1,11 +1,14 @@
 
 import pandas as pd
 
+from utils.ConstantsManagement import ConstantsManagement
+
 class FileUtils():
     def __init__(self, fileName=None):
-        self.path="./dados/"
+        self.constantsManagement = ConstantsManagement()
+        self.path=self.constantsManagement.DIRECTORY_DATA
         if fileName == None: 
-            self.fileName = "dados.csv"
+            self.fileName = self.constantsManagement.FILE_DATA
         else:
             self.fileName = fileName
         self.fileOriginal = self.path + self.fileName

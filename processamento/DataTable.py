@@ -3,12 +3,15 @@ from processamento.Dummy import Dummy
 from processamento.NormalizeUtils import NormalizeUtils
 import pandas as pd
 
+from utils.ConstantsManagement import ConstantsManagement
+
 class DataTable:
     def __init__(self):
         self.normalizeUtils = NormalizeUtils()
         self.fileUtils=FileUtils()
-        self.fileUtilsFinal=FileUtils('data_final.csv')
-        self.fileUtilsFeelings=FileUtils('emocoes.csv')
+        self.constantsManagement = ConstantsManagement()
+        self.fileUtilsFinal=FileUtils(self.constantsManagement.WRANGLED_DATA_FINAL)
+        self.fileUtilsFeelings=FileUtils(self.constantsManagement.EMOTIONS_FILE)
         self.dataFrame = self.fileUtils.readFile()
         self.dataFrameFeeling = self.fileUtilsFeelings.readFile(';')    
         self.dummy = Dummy(self.dataFrame)

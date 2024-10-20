@@ -8,8 +8,10 @@ class NormalizeUtils():
             return 2
         elif text == "negativo":
             return 0
-        else:
+        elif text == "neutro":
             return 1
+        else: 
+            return text
     
     def Sim2Binary(self, text):
         if text == 'Sim':

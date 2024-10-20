@@ -10,8 +10,8 @@ from utils.ConstantsManagement import ConstantsManagement
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
 class TrainingFeelingAnalysis:
-    def __init__(self,  class_names, text, targets):     
-        self.class_names = class_names
+    def __init__(self, text, targets):     
+        
         self.text = text
         self.targets = targets
         self.deviceUtils = DeviceUtils()
@@ -19,13 +19,16 @@ class TrainingFeelingAnalysis:
         self.loss_fn = nn.CrossEntropyLoss().to(self.device) 
         self.model = SentimentClassifier(len(self.class_names))
         self.model = self.model.to(self.device)
-        self.optimizer = AdamW(self.model.parameters(), lr=3e-5, correct_bias=False)
-        self.constrantsManagement = ConstantsManagement()
-        self.fileUtils = FileUtils(self.constrantsManagement.WRANGLED_DATA_FINAL)
-        self.tokenizer = BertTokenizer.from_pretrained(self.constrantsManagement.PRE_TRAINED_MODEL_NAME)
+        self.constantsManagement = ConstantsManagement()
+        self.fileUtils = FileUtils(self.constantsManagement.WRANGLED_DATA_FINAL)
+        self.class_names = self.constantsManagement.CLASS_NAMES
+        self.tokenizer = BertTokenizer.from_pretrained(self.constantsManagement.PRE_TRAINED_MODEL_NAME)
         self.df_train, self.df_val, self.df_test = self.split_traininig_test(training_size=0.1, test_size=0.5)
-        self.data_loader = DataLoaderSentimentAnalysis(self.tokenizer, self.constrantsManagement.MAX_LEN, self.constrantsManagement.BATCH_SIZE)
-        
+        self.data_loader = DataLoaderSentimentAnalysis(self.tokenizer, self.constantsManagement.MAX_LEN, self.constantsManagement.BATCH_SIZE)
+    
+    def optimizer(self):
+        return AdamW(self.model.parameters(), lr=3e-5, correct_bias=False)
+     
     def train_epoch(self,  n_examples ):
         self.model = self.model.train()
         train_data_loader = self.train_data_loader()
@@ -35,13 +38,15 @@ class TrainingFeelingAnalysis:
     def split_traininig_test(self, training_size, test_size):
         self.seeder()
         df = self.fileUtils.readFile(';')
-        df_train, df_test = train_test_split(df, test_size=training_size, random_state=self.constrantsManagement.RANDOM_SEED)
-        df_val, df_test = train_test_split(df_test, test_size=test_size, random_state=self.constrantsManagement.RANDOM_SEED)
+        df_train, df_test = train_test_split(df, test_size=training_size, random_state=self.constantsManagement.RANDOM_SEED)
+        df_val, df_test = train_test_split(df_test, test_size=test_size, random_state=self.constantsManagement.RANDOM_SEED)
         return df_train, df_val, df_test
     
     def correct_predictions_losses(self, optimize=False, data_loader=None):
       losses = []
       correct_predictions = 0
+      optimizer = self.optimizer()
+      scheduler = self.scheduler(data_loader=data_loader, optimizer=optimizer)
       
       for d in data_loader:
         outputs, targets = self.generate_model(d)
@@ -51,15 +56,15 @@ class TrainingFeelingAnalysis:
             loss = self.loss_fn(outputs, targets)
         else:
             raise ValueError(f"Unexpected output shape: {outputs.shape}")
-        if optimize:
-            scheduler = self.scheduler(data_loader=data_loader)
-            loss.backward()
-            nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-            self.optimizer.step()
-            scheduler.step()
-            self.optimizer.zero_grad()
         correct_predictions += torch.sum(preds == targets)
         losses.append(loss.item())
+        if optimize == True:
+            loss.backward()
+            nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+            optimizer.step()
+            scheduler.step()
+            optimizer.zero_grad()
+        
         return correct_predictions, losses
     
     def generate_model(self, data):
@@ -85,13 +90,13 @@ class TrainingFeelingAnalysis:
       return correct_predictions.double() / n_examples, np.mean(losses)
     
     def seeder(self):
-        np.random.seed(self.constrantsManagement.RANDOM_SEED)
-        torch.manual_seed(self.constrantsManagement.RANDOM_SEED)
+        np.random.seed(self.constantsManagement.RANDOM_SEED)
+        torch.manual_seed(self.constantsManagement.RANDOM_SEED)
     
-    def scheduler(self, data_loader):
-        total_steps = len(data_loader) * self.constrantsManagement.EPOCHS
+    def scheduler(self, data_loader, optimizer=None):
+        total_steps = len(data_loader) * self.constantsManagement.EPOCHS
         return get_linear_schedule_with_warmup(
-            self.optimizer,
+            optimizer,
             num_warmup_steps=0,
             num_training_steps=total_steps
         )
@@ -108,9 +113,9 @@ class TrainingFeelingAnalysis:
         history = defaultdict(list)
         best_accuracy = 0
 
-        for epoch in range(self.constrantsManagement.EPOCHS):
+        for epoch in range(self.constantsManagement.EPOCHS):
 
-            print(f'Epoch {epoch + 1}/{self.constrantsManagement.EPOCHS}')
+            print(f'Epoch {epoch + 1}/{self.constantsManagement.EPOCHS}')
             print('-' * 10)
 
             train_acc, train_loss = self.train_epoch(n_examples=n_examples)
@@ -128,6 +133,6 @@ class TrainingFeelingAnalysis:
             history['val_loss'].append(val_loss)
 
             if val_acc > best_accuracy:
-                torch.save(self.model.state_dict(), self.constrantsManagement.MODEL_FEELINGS_ANALYSIS_PATH)
+                torch.save(self.model.state_dict(), self.constantsManagement.MODEL_FEELINGS_ANALYSIS_PATH)
                 best_accuracy = val_acc
         return best_accuracy, history
