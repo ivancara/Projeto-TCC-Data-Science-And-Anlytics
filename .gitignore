@@ -6411,3 +6411,5 @@ processamento/TextAnalysis/__pycache__/FactDataset.cpython-312.pyc
 utils/constants/__pycache__/AppConfig.cpython-312.pyc
 processamento/TextAnalysis/__pycache__/TrainingFeelingAnalysis.cpython-312.pyc
 processamento/TextAnalysis/__pycache__/DataLoaderSentimentAnalysis.cpython-312.pyc
+*.bin
+processamento/TextAnalysis/__pycache__/PredictFeelingAnalysis.cpython-312.pyc

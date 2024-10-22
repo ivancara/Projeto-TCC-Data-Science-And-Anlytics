@@ -10,7 +10,7 @@ class DataTable:
         self.normalizeUtils = NormalizeUtils()
         self.fileUtils=FileUtils()
         self.constantsManagement = ConstantsManagement()
-        self.fileUtilsFinal=FileUtils(self.constantsManagement.WRANGLED_DATA_FINAL)
+        self.fileUtilsFinal=FileUtils(self.constantsManagement.DATA_FINAL)
         self.fileUtilsFeelings=FileUtils(self.constantsManagement.EMOTIONS_FILE)
         self.dataFrame = self.fileUtils.readFile()
         self.dataFrameFeeling = self.fileUtilsFeelings.readFile(';')    
@@ -37,6 +37,7 @@ class DataTable:
         self.dummy.getDummy('emocoes_lembranca_atual', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_atual_transformada_futuro', ';')
         self.dummy.getDummy('emocoes_lembranca_atual_transformada_futuro', applyMapping=self.normalizeUtils.normalizeString)
+
         self.dataFrame = self.dummy.data
         self.dummyFeeling.getDummy('tipo', applyMapping=self.normalizeUtils.dummyFeelingType)
         self.dummyFeeling.getDummy('emocao', applyMapping=self.normalizeUtils.normalizeString)
@@ -73,7 +74,6 @@ class DataTable:
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_transformada', right_on='emocao', suffixes=('', '_lembranca_transformada'))
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual', right_on='emocao', suffixes=('', '_lembranca_atual'))
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual_transformada_futuro', right_on='emocao', suffixes=('', '_lembranca_atual_transformada_futuro'))
-        self.dataFrameFinal = self.dataFrameFinal.drop(columns=['emocao', 'emocao_lembranca_passado', 'emocao_lembranca_transformada', 'emocao_lembranca_atual', 'emocao_lembranca_atual_transformada_futuro'])
         self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
         self.dataFrameFinal = self.dataFrameFinal.fillna(0)
         

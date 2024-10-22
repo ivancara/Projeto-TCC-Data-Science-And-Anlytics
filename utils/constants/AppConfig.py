@@ -1,13 +1,16 @@
 class AppConfig:
-    EPOCHS = 10
-    BATCH_SIZE = 16
-    MAX_LEN = 254
-    RANDOM_SEED = 42
+    EPOCHS = 100
+    BATCH_SIZE = 100
+    MAX_LEN = 160
+    RANDOM_SEED = 666
     PRE_TRAINED_MODEL_NAME = 'neuralmind/bert-base-portuguese-cased'
-    WRANGLED_DATA_FINAL = 'wrangled_data_final.csv' 
-    MODEL_FEELINGS_ANALYSIS_PATH='best_model_state.bin'
-    CLASS_NAMES = ['negativo', 'neutro', 'positivo']
-    FILE_DATA = 'dados.csv'
+    MODEL_FEELINGS_ANALYSIS_PATH='./data/models/feeling_analysis.bin'
+    FEELINGS_ANALYSIS_CLASSES = ['negativo', 'neutro', 'positivo']
+    FILE_DATA = 'dados_iniciais.csv'
     DIRECTORY_DATA = './dados/'
     EMOTIONS_FILE = 'emocoes.csv'
-    FILE_DATA_FINAL = 'data_final.csv'
+    DATA_FINAL='dados.csv'
+    WRANGLED_DATA_FINAL = 'out_dados.csv' 
+    TRAIN_PERCENTAGE = 0.7
+    TEST_PERCENTAGE = 0.2
+    LEARNING_RATE=3e-5

@@ -19,6 +19,7 @@ class FactDataset(Dataset):
       facts,
       add_special_tokens=True,
       max_length=self.max_len,
+      truncation=True,
       return_token_type_ids=False,
       padding='max_length',
       pad_to_max_length=True,

@@ -12,14 +12,14 @@ class FileUtils():
         else:
             self.fileName = fileName
         self.fileOriginal = self.path + self.fileName
-        self.fileDataFrame = self.path + "wrangled_" + self.fileName
+        self.file_out = self.path + 'out_' + self.fileName
         self.sep = ','
         
     def readFile(self, sep=','):
         self.fileOriginal = self.path+self.fileName
-        self.fileDataFrame = self.path + "wrangled_" + self.fileName
+        self.file_out = self.path + 'out_' + self.fileName
         file = self.fileOriginal
         return pd.read_csv(file, sep=sep, encoding='utf-8')
     
     def writeFile(self, dataFrame):
-        return dataFrame.to_csv(self.fileDataFrame, sep=';', encoding='utf-8',index=False, header=True)
+        return dataFrame.to_csv(self.file_out, sep=';', encoding='utf-8',index=False, header=True)

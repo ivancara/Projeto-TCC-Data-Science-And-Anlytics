@@ -17,17 +17,17 @@ class TrainingFeelingAnalysis:
         self.deviceUtils = DeviceUtils()
         self.device = self.deviceUtils.get_device()
         self.loss_fn = nn.CrossEntropyLoss().to(self.device) 
-        self.model = SentimentClassifier(len(self.class_names))
-        self.model = self.model.to(self.device)
         self.constantsManagement = ConstantsManagement()
         self.fileUtils = FileUtils(self.constantsManagement.WRANGLED_DATA_FINAL)
-        self.class_names = self.constantsManagement.CLASS_NAMES
+        self.class_names = self.constantsManagement.FEELINGS_ANALYSIS_CLASSES
+        self.model = SentimentClassifier(len(self.class_names))
+        self.model = self.model.to(self.device)
         self.tokenizer = BertTokenizer.from_pretrained(self.constantsManagement.PRE_TRAINED_MODEL_NAME)
-        self.df_train, self.df_val, self.df_test = self.split_traininig_test(training_size=0.1, test_size=0.5)
+        self.df_train, self.df_val, self.df_test = self.split_traininig_test(training_size=self.constantsManagement.TRAIN_PERCENTAGE, test_size=self.constantsManagement.TEST_PERCENTAGE)
         self.data_loader = DataLoaderSentimentAnalysis(self.tokenizer, self.constantsManagement.MAX_LEN, self.constantsManagement.BATCH_SIZE)
     
     def optimizer(self):
-        return AdamW(self.model.parameters(), lr=3e-5, correct_bias=False)
+        return AdamW(self.model.parameters(), lr=self.constantsManagement.LEARNING_RATE, correct_bias=False, no_deprecation_warning=True)
      
     def train_epoch(self,  n_examples ):
         self.model = self.model.train()
@@ -116,6 +116,8 @@ class TrainingFeelingAnalysis:
         for epoch in range(self.constantsManagement.EPOCHS):
 
             print(f'Epoch {epoch + 1}/{self.constantsManagement.EPOCHS}')
+            print('-' * 10)
+            print('Best Accuracy:', best_accuracy)
             print('-' * 10)
 
             train_acc, train_loss = self.train_epoch(n_examples=n_examples)
