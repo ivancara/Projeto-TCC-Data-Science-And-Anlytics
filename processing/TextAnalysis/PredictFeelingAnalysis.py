@@ -1,13 +1,14 @@
 
 import torch.nn.functional as F
 import torch
-
 from transformers import  BertTokenizer
 from processing.TextAnalysis.SentimentClassifier import SentimentClassifier
 from utils.DeviceUtils import DeviceUtils
 from utils.ConstantsManagement import ConstantsManagement
+from utils.FileUtils import FileUtils
 class PredictFeelingAnalysis:
     def __init__(self):
+        self.fileUtils = FileUtils()
         self.device = DeviceUtils()
         self.constrantManagement = ConstantsManagement()
         self.class_names = self.constrantManagement.FEELINGS_ANALYSIS_CLASSES
@@ -17,7 +18,7 @@ class PredictFeelingAnalysis:
     
     def predict(self, text):
         binaryModel = self.fileUtils.loadTorchModel(self.constrantManagement.MODEL_FEELINGS_ANALYSIS_PATH)
-        self.classifier.load_state_dict(binaryModel, map_location=self.device.get_device())
+        self.classifier.load_state_dict(binaryModel)
         self.classifier = self.classifier.eval()
         self.classifier = self.classifier.to(self.device.get_device())
         encoded_text = \
@@ -44,6 +45,7 @@ class PredictFeelingAnalysis:
         probabilities = probabilities.flatten().cpu().numpy().tolist()
 
         return(
+            predicted_class,
             self.class_names[predicted_class],
             confidence,
             dict(zip(self.class_names, probabilities))

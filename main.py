@@ -4,8 +4,14 @@ from processing.TextAnalysis.PredictFeelingAnalysis import PredictFeelingAnalysi
 from processing.DepressionAnalysis.TrainingDepression import TrainingDepression
 from processing.DepressionAnalysis.PredictDepression import PredictDepression
 from processing.Data.DataTable import DataTable
+from utils.NormalizeUtils import NormalizeUtils
 from utils.FileUtils import FileUtils
 from utils.ConstantsManagement import ConstantsManagement
+from model_statistics.SummaryDepressionAnalysis import SummaryDepressionAnalysis
+from model_statistics.SummaryTextAnalysis import SummaryTextAnalysis
+import warnings
+warnings.filterwarnings('ignore')
+
 class Main:
     def __init__(self) -> None:
         pass
@@ -46,28 +52,31 @@ class Main:
                     training.train()
                     pass
                 case 4:
-                    predict = PredictDepression()
-                    predict = PredictFeelingAnalysis()
+                    predictDepression = PredictDepression()
+                    predict = NormalizeUtils()
                     description = input("Describe some history that enhance your decisions in future: ")
-                    lembranca_atual_futuro_predicted = predict.predict(description)
+                    lembranca_atual_futuro_predicted = predict.predictFeelings(description)
                     description = input("Remember some history that enhance your decisions today: ")
-                    descricao_lembranca_passado_predicted = predict.predict(description)
+                    descricao_lembranca_passado_predicted = predict.predictFeelings(description)
                     terapia = int(input("Do you have therapy? (1-yes or 0-no): "))
                     identifica_emocoes = int(input("Do you identify emotions? (1-yes or 0-no): "))
-                    genero = input("Enter your Genre (Male: 0 or Female: 1): ")
-                    data = pd.DataFrame({'lembranca_atual_futuro_predicted': lembranca_atual_futuro_predicted,
-                                            'descricao_lembranca_passado_predicted': descricao_lembranca_passado_predicted,
-                                         'terapia': terapia,
-                                         'identifica_emocoes': identifica_emocoes,
-                                         'genero_Feminino': 1 if genero == 1 else 0,
-                                         'genero_Masculino': 1 if genero == 0 else 0}, index=[0])
-                    predict.predict(data)
+                    genero = int(input("Enter your Genre (Male: 0 or Female: 1): "))
+                    data = pd.DataFrame({'lembranca_atual_futuro_predicted': [lembranca_atual_futuro_predicted],
+                                         'descricao_lembranca_passado_predicted': [descricao_lembranca_passado_predicted],
+                                         'terapia': [terapia],
+                                         'identifica_emocoes': [identifica_emocoes],
+                                         'genero_Feminino': [genero == 1],
+                                         'genero_Masculino': [genero == 0]})
+                    print(data)
+                    predictDepression.predict(data)
                     pass
                 case 5:
-                    print("Statistics Feeling Analysis")
+                    statistics = SummaryTextAnalysis()
+                    print(statistics.get_summary())
                     pass
                 case 6:
-                    print("Statistics Feeling Analysis")
+                    statistics = SummaryDepressionAnalysis()
+                    print(statistics.get_summary())
                     pass
                 case 7:
                     fileUtils = FileUtils()

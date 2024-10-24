@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import pandas as pd
 from transformers import  BertTokenizer, AdamW, get_linear_schedule_with_warmup
 from collections import defaultdict
 from torcheval.metrics import R2Score
@@ -26,9 +27,10 @@ class TrainingFeelingAnalysis:
         self.model = SentimentClassifier(len(self.class_names))
         self.model = self.model.to(self.device)
         self.tokenizer = BertTokenizer.from_pretrained(self.constantsManagement.PRE_TRAINED_MODEL_NAME)
-        self.df_train, self.df_val, self.df_test = self.split_traininig_test(training_size=self.constantsManagement.TRAIN_PERCENTAGE, test_size=self.constantsManagement.TEST_PERCENTAGE)
         self.data_loader = DataLoaderSentimentAnalysis(self.tokenizer, self.constantsManagement.MAX_LEN, self.constantsManagement.BATCH_SIZE)
         self.dataUtils = DataSplitUtils()
+        self.df_train, self.df_val, self.df_test = self.split_traininig_test(training_size=self.constantsManagement.TRAIN_PERCENTAGE, test_size=self.constantsManagement.TEST_PERCENTAGE)
+        
     
     def optimizer(self):
         return AdamW(self.model.parameters(), lr=self.constantsManagement.LEARNING_RATE, correct_bias=False, no_deprecation_warning=True)
@@ -42,8 +44,8 @@ class TrainingFeelingAnalysis:
     def split_traininig_test(self, training_size, test_size):
         self.seeder()
         df = self.fileUtils.readFile(';')
-        df_train, df_test = self.dataSplitUtils.split_data(df, size=training_size)
-        df_val, df_test = self.dataSplitUtils.split_data(df_test, size=test_size)
+        df_train, df_test = self.dataUtils.split_data(df, size=training_size)
+        df_val, df_test = self.dataUtils.split_data(df_test, size=test_size)
         return df_train, df_val, df_test
     
     def correct_predictions_losses(self, optimize=False, data_loader=None):
@@ -142,6 +144,8 @@ class TrainingFeelingAnalysis:
 
             if val_r2 > best_r2 and best_r2 < 1:
                 torch.save(self.model.state_dict(), self.constantsManagement.MODEL_FEELINGS_ANALYSIS_PATH)
+                file = FileUtils(self.constantsManagement.TEXT_STATISTICS_HISTORY)
+                file.writeFile(pd.DataFrame(history))
                 best_accuracy = val_acc
                 best_r2 = val_r2
         return best_accuracy, history, best_r2

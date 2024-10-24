@@ -4,6 +4,7 @@ from utils.ConstantsManagement import ConstantsManagement
 from utils.FileUtils import FileUtils
 class PredictDepression:
     def __init__(self):
+        self.constantsManagement = ConstantsManagement()
         pass
     
     def loadModel(self):
@@ -13,5 +14,6 @@ class PredictDepression:
     
     def predict(self, data):
         self.model = self.loadModel()
-        predict = np.round(self.model.predict(data),0).astype(int)
+        predicted = self.model.predict(data)
+        predict = np.round(predicted,0).astype(int)
         return predict

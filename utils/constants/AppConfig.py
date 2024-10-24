@@ -16,3 +16,4 @@ class AppConfig:
     TRAIN_PERCENTAGE = 0.7
     TEST_PERCENTAGE = 0.2
     LEARNING_RATE=3e-5
+    TEXT_STATISTICS_HISTORY = 'text_statistics_history.csv'

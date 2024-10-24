@@ -1,8 +1,7 @@
 from utils.FileUtils import FileUtils
-from Data.Dummy import Dummy
+from processing.Data.Dummy import Dummy
 from utils.NormalizeUtils import NormalizeUtils
 import pandas as pd
-
 from utils.ConstantsManagement import ConstantsManagement
 
 class DataTable:

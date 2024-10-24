@@ -10,7 +10,8 @@ class TrainingDepression:
     def __init__(self, target=None, fieldsToValidate=[]) -> None:
         self.dataSplitUtils = DataSplitUtils()
         self.constantsManagement = ConstantsManagement()
-        self.fileUtils = FileUtils(self.constantsManagement.PREDICTED_DEPRESSION_FILE)
+        self.fileUtils = FileUtils(self.constantsManagement.WRANGLED_DATA_FINAL)
+        data = self.fileUtils.readFile(';')
         self.df_train, self.df_test = self.dataSplitUtils.split_data(data, size=self.constantsManagement.TRAIN_PERCENTAGE)
         self.df_val, self.df_test = self.dataSplitUtils.split_data(self.df_test, size=self.constantsManagement.TEST_PERCENTAGE)
         self.model = None
@@ -18,7 +19,7 @@ class TrainingDepression:
         self.fieldsToValidate = fieldsToValidate
 
     def train(self):
-        self.model = smf.glm(formula=f'{self.target} ~ {'+'.join(self.fieldsToValidate)}'	
+        self.model = smf.glm(formula=f'{self.target} ~ {' + '.join(self.fieldsToValidate)}'	
                                  , data=self.df_train
                                  , family=sm.families.Binomial())
         self.model = self.model.fit()
