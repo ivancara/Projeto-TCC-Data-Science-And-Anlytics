@@ -1,6 +1,7 @@
 
 import torch.nn.functional as F
 import torch
+
 from transformers import  BertTokenizer
 from processamento.TextAnalysis.SentimentClassifier import SentimentClassifier
 from utils.DeviceUtils import DeviceUtils
@@ -12,14 +13,15 @@ class PredictFeelingAnalysis:
         self.class_names = self.constrantManagement.FEELINGS_ANALYSIS_CLASSES
         self.tokenizer = BertTokenizer.from_pretrained(self.constrantManagement.PRE_TRAINED_MODEL_NAME)
         self.classifier =SentimentClassifier(len(self.class_names))
-        self.classifier.load_state_dict(torch.load(self.constrantManagement.MODEL_FEELINGS_ANALYSIS_PATH, map_location=self.device.get_device()))
-        self.classifier = self.classifier.eval()
-        self.classifier = self.classifier.to(self.device.get_device())
+        
     
     def predict(self, text):
-
+        binaryModel = self.fileUtils.loadTorchModel(self.constrantManagement.MODEL_FEELINGS_ANALYSIS_PATH)
+        self.classifier.load_state_dict(binaryModel, map_location=self.device.get_device())
+        self.classifier = self.classifier.eval()
+        self.classifier = self.classifier.to(self.device.get_device())
         encoded_text = \
-            self.tokenizer.encode_plus( text,
+            self.tokenizer.encode_plus(text,
                                         add_special_tokens=True,
                                         max_length = self.constrantManagement.MAX_LEN,
                                         truncation=True,

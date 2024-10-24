@@ -7,3 +7,6 @@ scikit-learn
 torch
 torchaudio
 torchvision
+torcheval
+statsmodels
+torchsummary

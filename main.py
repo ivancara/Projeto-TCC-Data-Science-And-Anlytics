@@ -1,37 +1,45 @@
-
-from matplotlib import pyplot as plt
-from sklearn.metrics import confusion_matrix
-from processamento.DataTable import DataTable
-from processamento.FileUtils import FileUtils
-from processamento.TextAnalysis.PredictFeelingAnalysis import PredictFeelingAnalysis
-from processamento.TextAnalysis.TrainingFeelingAnalysis import TrainingFeelingAnalysis
-import pandas as pd
-import seaborn as sns
-
 class Main:
     def __init__(self) -> None:
-        self.dataTable = DataTable()
-    def show_confusion_matrix(confusion_matrix):
-        hmap = sns.heatmap(confusion_matrix, annot=True, fmt="d", cmap="Blues")
-        hmap.yaxis.set_ticklabels(hmap.yaxis.get_ticklabels(), rotation=0, ha='right')
-        hmap.xaxis.set_ticklabels(hmap.xaxis.get_ticklabels(), rotation=30, ha='right')
-        plt.ylabel('True sentiment')
-        plt.xlabel('Predicted sentiment')
+        pass
+    def main(self): 
+        while True:
+            print("-"*34)
+            print("1 - Training Feeling Analysis")
+            print("2 - Predict Feeling Analysis")
+            print("3 - Training Depression Analysis")
+            print("4 - Predict Depression Analysis")
+            print("5 - Depression Analysis")
+            print("6 - Feeling Analysis")
+            print("7 - Statistics Feeling Analysis")
+            print("8 - Statistics Depression Analysis")
+            print("9 - Generate Data")
+            print("10 - Exit")
+            print("-"*34)
+            option = int(input("Choose an option: "))
+            if option == 1:
+                pass
+            elif option == 2:
+                pass
+            elif option == 3:
+                pass
+            elif option == 4:
+                pass
+            elif option == 5:
+                pass
+            elif option == 6:
+                pass
+            elif option == 7:
+                pass
+            elif option == 8:
+                pass
+            elif option == 9:
+                pass
+            elif option == 10:
+                exit()
+            else:
+                print("Invalid option")
+        pass
 
-
-    def main(self):
-      #self.dataTable.writeDataTableIntoFile()  
-      #column_description = 'lembranca_atual_futuro'
-      #column_target = 'tipo_lembranca_atual'
-      #training = TrainingFeelingAnalysis(column_description, column_target)      
-      #best_accuracy, history = training.train()
-      #print(f'Best accuracy: {best_accuracy}')
-      predictions = PredictFeelingAnalysis()   
-      print('ganhei um cocô', predictions.predict('ganhei um cocô'))
-        
-
-
-        
 if __name__ == "__main__":
     main = Main()
     main.main()

@@ -17,6 +17,7 @@ class DataTable:
         self.dummy = Dummy(self.dataFrame)
         self.dummyFeeling = Dummy(self.dataFrameFeeling)
         self.dataFrameFinal = pd.DataFrame()
+        self.dummyFinal = Dummy(None)
         
     
     def dummies(self):
@@ -76,6 +77,12 @@ class DataTable:
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual_transformada_futuro', right_on='emocao', suffixes=('', '_lembranca_atual_transformada_futuro'))
         self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
         self.dataFrameFinal = self.dataFrameFinal.fillna(0)
+        self.dummyFinal = Dummy(self.dataFrameFinal)
+        self.dummyFinal.getDummy('lembranca_atual_futuro', 'lembranca_atual_futuro_predicted', applyMapping=self.normalizeUtils.predictFeelings)
+        self.dummyFinal.getDummy('descricao_lembranca_passado', 'descricao_lembranca_passado_predicted', applyMapping=self.normalizeUtils.predictFeelings)
+        self.dummyFinal.getDummy('descricao_lembranca_passado_predicted', applyMapping=self.normalizeUtils.dummyFeelingType)
+        self.dummyFinal.getDummy('lembranca_atual_futuro_predicted', applyMapping=self.normalizeUtils.dummyFeelingType)
+        self.dummyFinal.getDummy('possui_depressao_predicted', applyMapping=self.normalizeUtils.predictDepression(self.dataFrameFinal))
         
     def writeDataTableIntoFile(self):
         self.rename()

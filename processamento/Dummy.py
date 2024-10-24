@@ -5,9 +5,11 @@ class Dummy():
     def __init__(self, data) -> None:
         self.data = data
     
-    def getDummy(self, column,applyMapping=None, dtype='bool'):
+    def getDummy(self, column, newColumn=None,applyMapping=None, dtype='bool'):
         if applyMapping is not None:
-            self.data[column] = self.data[column].map(applyMapping, na_action=None)
+            if newColumn is None:
+                newColumn = column
+            self.data[newColumn] = self.data[column].map(applyMapping, na_action=None)
             if is_numeric_dtype(self.data[column]):
                 self.data[column] = self.data[column].astype('int64')
         else:
