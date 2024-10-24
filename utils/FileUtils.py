@@ -28,15 +28,17 @@ class FileUtils():
         return dataFrame.to_csv(self.file_out, sep=';', encoding='utf-8',index=False, header=True)
     
     def loadModelStatsModel(self, fileName):
-        my_file = Path(fileName)
-        if my_file.is_file():
+        if self.hasFile(fileName):
             return sm.load(fileName)
         else:
             return None
     
     def loadTorchModel(self, fileName):
-        my_file = Path(fileName)
-        if my_file.is_file():
+        if self.hasFile(fileName):
             return torch.load(fileName, map_location=self.deviceUtils.get_device())
         else:
             return None
+        
+    def hasFile(self, fileName):
+        my_file = Path(fileName)
+        return my_file.is_file()

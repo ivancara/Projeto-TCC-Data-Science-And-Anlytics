@@ -7,22 +7,18 @@ from utils.DataSplitUtils import DataSplitUtils
 from sklearn.metrics import accuracy_score,recall_score
 from utils.FileUtils import FileUtils
 class TrainingDepression:
-    def __init__(self, data):
+    def __init__(self, target=None, fieldsToValidate=[]) -> None:
         self.dataSplitUtils = DataSplitUtils()
         self.constantsManagement = ConstantsManagement()
         self.fileUtils = FileUtils(self.constantsManagement.PREDICTED_DEPRESSION_FILE)
         self.df_train, self.df_test = self.dataSplitUtils.split_data(data, size=self.constantsManagement.TRAIN_PERCENTAGE)
         self.df_val, self.df_test = self.dataSplitUtils.split_data(self.df_test, size=self.constantsManagement.TEST_PERCENTAGE)
         self.model = None
+        self.target = target
+        self.fieldsToValidate = fieldsToValidate
 
     def train(self):
-        self.model = smf.glm(formula='possui_depressao ~ '
-                                 +'lembranca_atual_futuro_predicted + '
-                                 +'descricao_lembranca_passado_predicted + '
-                                 +'terapia + '
-                                 +'identifica_emocoes + '
-                                 +'genero_Feminino + '
-                                 +'genero_Masculino'
+        self.model = smf.glm(formula=f'{self.target} ~ {'+'.join(self.fieldsToValidate)}'	
                                  , data=self.df_train
                                  , family=sm.families.Binomial())
         self.model = self.model.fit()
