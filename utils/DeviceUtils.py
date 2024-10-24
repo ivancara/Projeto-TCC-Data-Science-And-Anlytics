@@ -1,5 +1,4 @@
 import torch
-import os
 class DeviceUtils:
     def __init__(self):
         is_available = torch.cuda.is_available()    

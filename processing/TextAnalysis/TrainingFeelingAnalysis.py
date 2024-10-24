@@ -4,10 +4,10 @@ import numpy as np
 from transformers import  BertTokenizer, AdamW, get_linear_schedule_with_warmup
 from collections import defaultdict
 from torcheval.metrics import R2Score
-from processamento.FileUtils import FileUtils
-from processamento.TextAnalysis.DataLoaderSentimentAnalysis import DataLoaderSentimentAnalysis
-from processamento.TextAnalysis.SentimentClassifier import SentimentClassifier
-from processamento.Utils.DataSplitUtils import DataSplitUtils
+from utils.FileUtils import FileUtils
+from processing.TextAnalysis.DataLoaderSentimentAnalysis import DataLoaderSentimentAnalysis
+from processing.TextAnalysis.SentimentClassifier import SentimentClassifier
+from utils.DataSplitUtils import DataSplitUtils
 from utils.DeviceUtils import DeviceUtils
 from utils.ConstantsManagement import ConstantsManagement
 

@@ -1,8 +1,8 @@
 
 import numpy as np
 from utils.ConstantsManagement import ConstantsManagement
-from processamento.FileUtils import FileUtils
-class DepressionPredict:
+from utils.FileUtils import FileUtils
+class PredictDepression:
     def __init__(self):
         pass
     

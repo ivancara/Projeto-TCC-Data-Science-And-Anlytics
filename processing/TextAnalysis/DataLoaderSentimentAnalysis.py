@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset, DataLoader
-from processamento.TextAnalysis.FactDataset import FactDataset
+from processing.TextAnalysis.FactDataset import FactDataset
 class DataLoaderSentimentAnalysis:
     def __init__(self, tokenizer, max_len,batch_size):
         self.tokenizer = tokenizer

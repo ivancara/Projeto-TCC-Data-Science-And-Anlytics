@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import torch
 
 from transformers import  BertTokenizer
-from processamento.TextAnalysis.SentimentClassifier import SentimentClassifier
+from processing.TextAnalysis.SentimentClassifier import SentimentClassifier
 from utils.DeviceUtils import DeviceUtils
 from utils.ConstantsManagement import ConstantsManagement
 class PredictFeelingAnalysis:

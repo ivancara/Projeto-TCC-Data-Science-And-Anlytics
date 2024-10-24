@@ -1,10 +1,10 @@
 import unicodedata
-from processamento.TextAnalysis.PredictFeelingAnalysis import PredictFeelingAnalysis
-from processamento.DepressionAnalysis.DepressionPredict import DepressionPredict
+from processing.TextAnalysis.PredictFeelingAnalysis import PredictFeelingAnalysis
+from processing.DepressionAnalysis.PredictDepression import PredictDepression
 class NormalizeUtils():
     def __init__(self):
         self.predictFeelingAnalysis = PredictFeelingAnalysis()
-        self.depressionPredict = DepressionPredict()
+        self.PredictDepression = PredictDepression()
         pass
      
     def dummyFeelingType(self, text):
@@ -38,4 +38,4 @@ class NormalizeUtils():
         return predicted[0]
     
     def predictDepression(self, data):
-        return self.depressionPredict.predict(data)
+        return self.PredictDepression.predict(data)

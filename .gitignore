@@ -6413,6 +6413,8 @@ processamento/TextAnalysis/__pycache__/TrainingFeelingAnalysis.cpython-312.pyc
 processamento/TextAnalysis/__pycache__/DataLoaderSentimentAnalysis.cpython-312.pyc
 *.bin
 processamento/TextAnalysis/__pycache__/PredictFeelingAnalysis.cpython-312.pyc
-processamento/DepressionAnalysis/__pycache__/DepressionTraining.cpython-312.pyc
-processamento/DepressionAnalysis/__pycache__/DepressionPredict.cpython-312.pyc
+processamento/DepressionAnalysis/__pycache__/TrainingDepression.cpython-312.pyc
+processamento/DepressionAnalysis/__pycache__/PredictDepression.cpython-312.pyc
 processamento/Utils/__pycache__/DataSplitUtils.cpython-312.pyc
+processing/DepressionAnalysis/__pycache__/TrainingDepression.cpython-312.pyc
+*.pyc

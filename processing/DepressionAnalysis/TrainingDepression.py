@@ -3,10 +3,10 @@ import statsmodels.api as sm
 import pandas as pd
 import numpy as np
 from utils.ConstantsManagement import ConstantsManagement
-from processamento.Utils.DataSplitUtils import DataSplitUtils
+from utils.DataSplitUtils import DataSplitUtils
 from sklearn.metrics import accuracy_score,recall_score
-from processamento.FileUtils import FileUtils
-class DepressionTraining:
+from utils.FileUtils import FileUtils
+class TrainingDepression:
     def __init__(self, data):
         self.dataSplitUtils = DataSplitUtils()
         self.constantsManagement = ConstantsManagement()
