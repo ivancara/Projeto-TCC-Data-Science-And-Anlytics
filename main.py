@@ -11,7 +11,6 @@ from model_statistics.SummaryDepressionAnalysis import SummaryDepressionAnalysis
 from model_statistics.SummaryTextAnalysis import SummaryTextAnalysis
 import warnings
 warnings.filterwarnings('ignore')
-
 class Main:
     def __init__(self) -> None:
         self.normalizeUtils, self.fileUtils, self.constantManagement, self.dataSplitUtils, self.deviceUtils = self.dependencies()
