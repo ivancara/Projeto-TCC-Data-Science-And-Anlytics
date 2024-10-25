@@ -2,9 +2,9 @@ import unicodedata
 from processing.TextAnalysis.PredictFeelingAnalysis import PredictFeelingAnalysis
 from processing.DepressionAnalysis.PredictDepression import PredictDepression
 class NormalizeUtils():
-    def __init__(self):
-        self.predictFeelingAnalysis = PredictFeelingAnalysis()
-        self.PredictDepression = PredictDepression()
+    def __init__(self, constantsManagement, fileUtils, deviceUtils) -> None:
+        self.predictFeelingAnalysis = PredictFeelingAnalysis(constantManagement=constantsManagement, fileUtils=fileUtils, deviceUtils=deviceUtils)
+        self.PredictDepression = PredictDepression(constantsManagement=constantsManagement, fileUtils=fileUtils)
         pass
      
     def dummyFeelingType(self, text):

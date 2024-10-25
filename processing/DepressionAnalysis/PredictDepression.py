@@ -1,15 +1,13 @@
 
 import numpy as np
-from utils.ConstantsManagement import ConstantsManagement
-from utils.FileUtils import FileUtils
 class PredictDepression:
-    def __init__(self):
-        self.constantsManagement = ConstantsManagement()
+    def __init__(self, constantsManagement, fileUtils) -> None:
+        self.constantsManagement = constantsManagement
+        self.fileUtils = fileUtils
         pass
     
     def loadModel(self):
-        fileUtils = FileUtils()
-        self.model = fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        self.model = self.fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         return self.model
     
     def predict(self, data):

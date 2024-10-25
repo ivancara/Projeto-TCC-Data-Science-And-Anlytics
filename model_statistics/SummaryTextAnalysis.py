@@ -1,11 +1,5 @@
-from utils.ConstantsManagement import ConstantsManagement
-from utils.FileUtils import FileUtils
-from utils.DeviceUtils import DeviceUtils
-
 class SummaryTextAnalysis:
-    def __init__(self):
-        constants = ConstantsManagement()
-        fileUtils = FileUtils('out_'+constants.TEXT_STATISTICS_HISTORY)
+    def __init__(self, fileUtils) -> None:
         self.history = fileUtils.readFile(';')
         pass
     

@@ -5,30 +5,25 @@ import pandas as pd
 from transformers import  BertTokenizer, AdamW, get_linear_schedule_with_warmup
 from collections import defaultdict
 from torcheval.metrics import R2Score
-from utils.FileUtils import FileUtils
 from processing.TextAnalysis.DataLoaderSentimentAnalysis import DataLoaderSentimentAnalysis
 from processing.TextAnalysis.SentimentClassifier import SentimentClassifier
-from utils.DataSplitUtils import DataSplitUtils
-from utils.DeviceUtils import DeviceUtils
-from utils.ConstantsManagement import ConstantsManagement
-
-
 class TrainingFeelingAnalysis:
-    def __init__(self, text, targets):     
+    def __init__(self, text, targets, deviceUtils, constantsManagement, dataSplitUtils, fileUtilsWrangledData, fileUtilsTextStatisticHistory) -> None:     
         self.metric = R2Score()
         self.text = text
         self.targets = targets
-        self.deviceUtils = DeviceUtils()
+        self.deviceUtils = deviceUtils
+        self.fileUtilsTextStatisticHistory = fileUtilsTextStatisticHistory
         self.device = self.deviceUtils.get_device()
         self.loss_fn = nn.CrossEntropyLoss().to(self.device) 
-        self.constantsManagement = ConstantsManagement()
-        self.fileUtils = FileUtils(self.constantsManagement.WRANGLED_DATA_FINAL)
+        self.constantsManagement = constantsManagement
+        self.fileUtils = fileUtilsWrangledData
         self.class_names = self.constantsManagement.FEELINGS_ANALYSIS_CLASSES
-        self.model = SentimentClassifier(len(self.class_names))
+        self.model = SentimentClassifier(len(self.class_names), constantsManagement=constantsManagement)
         self.model = self.model.to(self.device)
         self.tokenizer = BertTokenizer.from_pretrained(self.constantsManagement.PRE_TRAINED_MODEL_NAME)
         self.data_loader = DataLoaderSentimentAnalysis(self.tokenizer, self.constantsManagement.MAX_LEN, self.constantsManagement.BATCH_SIZE)
-        self.dataUtils = DataSplitUtils()
+        self.dataUtils = dataSplitUtils
         self.df_train, self.df_val, self.df_test = self.split_traininig_test(training_size=self.constantsManagement.TRAIN_PERCENTAGE, test_size=self.constantsManagement.TEST_PERCENTAGE)
         
     
@@ -144,7 +139,7 @@ class TrainingFeelingAnalysis:
 
             if val_r2 > best_r2 and best_r2 < 1:
                 torch.save(self.model.state_dict(), self.constantsManagement.MODEL_FEELINGS_ANALYSIS_PATH)
-                file = FileUtils(self.constantsManagement.TEXT_STATISTICS_HISTORY)
+                file = self.fileUtilsTextStatisticHistory
                 file.writeFile(pd.DataFrame(history))
                 best_accuracy = val_acc
                 best_r2 = val_r2

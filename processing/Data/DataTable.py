@@ -1,16 +1,12 @@
-from utils.FileUtils import FileUtils
 from processing.Data.Dummy import Dummy
-from utils.NormalizeUtils import NormalizeUtils
 import pandas as pd
-from utils.ConstantsManagement import ConstantsManagement
-
 class DataTable:
-    def __init__(self):
-        self.normalizeUtils = NormalizeUtils()
-        self.fileUtils=FileUtils()
-        self.constantsManagement = ConstantsManagement()
-        self.fileUtilsFinal=FileUtils(self.constantsManagement.DATA_FINAL)
-        self.fileUtilsFeelings=FileUtils(self.constantsManagement.EMOTIONS_FILE)
+    def __init__(self, fileUtils,constantsManagement, normalizeUtils, fileUtilsFinal, fileUtilsFeelings) -> None:
+        self.normalizeUtils = normalizeUtils
+        self.fileUtils=fileUtils
+        self.constantsManagement = constantsManagement
+        self.fileUtilsFinal=fileUtilsFinal
+        self.fileUtilsFeelings=fileUtilsFeelings
         self.dataFrame = self.fileUtils.readFile()
         self.dataFrameFeeling = self.fileUtilsFeelings.readFile(';')    
         self.dummy = Dummy(self.dataFrame)

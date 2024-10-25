@@ -1,9 +1,7 @@
-from utils.ConstantsManagement import ConstantsManagement
-from utils.FileUtils import FileUtils
 class SummaryDepressionAnalysis:
-    def __init__(self):
-        constrants = ConstantsManagement()
-        fileUtils = FileUtils()
+    def __init__(self, fileUtils, constantsManagement) -> None:
+        constrants = constantsManagement
+        fileUtils = fileUtils
         self.model = fileUtils.loadModelStatsModel(constrants.MODEL_DEPRESSION_ANALYSIS_PATH)
 
     def get_summary(self):
