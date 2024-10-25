@@ -4,7 +4,7 @@ class SummaryDepressionAnalysis:
     def __init__(self):
         constrants = ConstantsManagement()
         fileUtils = FileUtils()
-        self.model = fileUtils.loadModelStatsModel(constrants.MODEL_DEPRESSION_PATH)
+        self.model = fileUtils.loadModelStatsModel(constrants.MODEL_DEPRESSION_ANALYSIS_PATH)
 
     def get_summary(self):
         return self.model.summary()

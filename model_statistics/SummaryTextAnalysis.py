@@ -19,5 +19,4 @@ class SummaryTextAnalysis:
         print(f"Validation Loss: {data['val_loss'].values[0]}")
         print(f"Train R Squared: {data['train_r2'].values[0]}")
         print(f"Validation R Squared: {data['val_r2'].values[0]}")
-        print('-'*100)
-        return 
+        print('-'*100) 

@@ -9,7 +9,7 @@ class PredictDepression:
     
     def loadModel(self):
         fileUtils = FileUtils()
-        self.model = fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_PATH)
+        self.model = fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         return self.model
     
     def predict(self, data):

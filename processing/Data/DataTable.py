@@ -76,20 +76,20 @@ class DataTable:
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_atual_transformada_futuro', right_on='emocao', suffixes=('', '_lembranca_atual_transformada_futuro'))
         self.dataFrameFinal = self.dataFrameFinal.drop_duplicates().reset_index(drop=True)
         self.dataFrameFinal = self.dataFrameFinal.fillna(0)
-
-    def addPredictedFields(self):
-        self.dummyFinal = Dummy(self.dataFrameFinal)
+    def addTextAnalysisPredictedFields(self):
         self.dummyFinal.getDummy('lembranca_atual_futuro', 'lembranca_atual_futuro_predicted', applyMapping=self.normalizeUtils.predictFeelings)
         self.dummyFinal.getDummy('descricao_lembranca_passado', 'descricao_lembranca_passado_predicted', applyMapping=self.normalizeUtils.predictFeelings)
-        self.dummyFinal.getDummy('descricao_lembranca_passado_predicted', applyMapping=self.normalizeUtils.dummyFeelingType)
-        self.dummyFinal.getDummy('lembranca_atual_futuro_predicted', applyMapping=self.normalizeUtils.dummyFeelingType)
+    def addDepressionAnalysisPredictedFields(self):
         self.dummyFinal.getDummy('possui_depressao_predicted', applyMapping=self.normalizeUtils.predictDepression(self.dataFrameFinal))     
-    def writeDataTableIntoFile(self, addPredictedFields=False):
+    def writeDataTableIntoFile(self, addTexAnalysisPredictedFields=False, addDepressionAnalysisPredictedFields=False):
         self.rename()
         self.dummies()
         self.mergeDataFrames()
-        if addPredictedFields:
-            self.addPredictedFields()
+        self.dummyFinal = Dummy(self.dataFrameFinal)
+        if addTexAnalysisPredictedFields:
+            self.addTextAnalysisPredictedFields()
+        if addDepressionAnalysisPredictedFields:
+            self.addDepressionAnalysisPredictedFields()
         self.fileUtils.writeFile(self.dataFrame)
         self.fileUtilsFeelings.writeFile(self.dataFrameFeeling)
         self.fileUtilsFinal.writeFile(self.dataFrameFinal)

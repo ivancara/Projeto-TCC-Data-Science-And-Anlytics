@@ -77,15 +77,15 @@ class Main:
                         pass
                     case 6:
                         statistics = SummaryDepressionAnalysis()
-                        print(statistics.get_summary())
+                        statistics.get_summary()
                         pass
                     case 7:
                         fileUtils = FileUtils()
                         constantManagement = ConstantsManagement()
                         data = DataTable()
-                        addPredictedData = fileUtils.hasFile(constantManagement.MODEL_FEELINGS_ANALYSIS_PATH) \
-                                    and fileUtils.hasFile(constantManagement.MODEL_DEPRESSION_PATH)
-                        data.writeDataTableIntoFile(addPredictedData)
+                        addTextFeelingsAnalysis = fileUtils.hasFile(constantManagement.MODEL_FEELINGS_ANALYSIS_PATH)
+                        addDepressionAnalysis = fileUtils.hasFile(constantManagement.MODEL_DEPRESSION_ANALYSIS_PATH) 
+                        data.writeDataTableIntoFile(addTexAnalysisPredictedFields=addTextFeelingsAnalysis, addDepressionAnalysisPredictedFields=addDepressionAnalysis)
                         pass
                     case 8:
                         exit()

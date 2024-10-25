@@ -25,10 +25,10 @@ class TrainingDepression:
         self.model = self.model.fit()
         self.df_train['possui_depressao_predicted'] = np.round(self.model.predict(),0).astype(int)
         self.fileUtils.writeFile(self.df_train)
-        self.model.save(self.constantsManagement.MODEL_DEPRESSION_PATH)
+        self.model.save(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
 
     def sumary(self):
-        self.fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_PATH)
+        self.fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         return self.model.summary()
     
     def eval(self, cutoff):

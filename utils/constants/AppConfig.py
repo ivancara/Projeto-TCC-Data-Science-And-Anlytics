@@ -5,7 +5,7 @@ class AppConfig:
     RANDOM_SEED = 42
     PRE_TRAINED_MODEL_NAME = 'neuralmind/bert-base-portuguese-cased'
     MODEL_FEELINGS_ANALYSIS_PATH='./data/models/feeling_analysis.bin'
-    MODEL_DEPRESSION_PATH='./data/models/depression.bin'
+    MODEL_DEPRESSION_ANALYSIS_PATH='./data/models/depression.bin'
     FEELINGS_ANALYSIS_CLASSES = ['negativo', 'neutro', 'positivo']
     PREDICTED_DEPRESSION_FILE = 'depression_test_predicted.csv'
     FILE_DATA = 'dados_iniciais.csv'
