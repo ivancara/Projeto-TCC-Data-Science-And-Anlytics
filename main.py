@@ -23,8 +23,7 @@ class Main:
         normalizeUtils = NormalizeUtils(fileUtils=fileUtils, constantsManagement=constantManagement, deviceUtils=deviceUtils)
         dataSplitUtils = DataSplitUtils(constantsManagement=constantManagement)
         return normalizeUtils, fileUtils, constantManagement, dataSplitUtils, deviceUtils
-    def main(self): 
-        
+    def main(self):       
         while True:
             print("-"*34)
             print("1 - Training Feeling Analysis")

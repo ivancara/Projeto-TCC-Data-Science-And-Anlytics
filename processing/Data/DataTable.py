@@ -12,9 +12,7 @@ class DataTable:
         self.dummy = Dummy(self.dataFrame)
         self.dummyFeeling = Dummy(self.dataFrameFeeling)
         self.dataFrameFinal = pd.DataFrame()
-        self.dummyFinal = Dummy(None)
-        
-    
+        self.dummyFinal = Dummy(None)        
     def dummies(self):
         self.dummy.getDummy('genero')
         self.dummy.getDummy('faixa_etaria')
@@ -37,7 +35,6 @@ class DataTable:
         self.dataFrame = self.dummy.data
         self.dummyFeeling.getDummy('tipo', applyMapping=self.normalizeUtils.dummyFeelingType)
         self.dummyFeeling.getDummy('emocao', applyMapping=self.normalizeUtils.normalizeString)
-
     def rename(self):
         columns = {
                         'Carimbo de data/hora':'data_resposta'
@@ -63,7 +60,6 @@ class DataTable:
                         ,'Com base nas emoções listadas abaixo, qual delas você acredita que pode sentir no futuro quando se lembrar deste ocorrido?':'emocoes_lembranca_atual_transformada_futuro'
                         }
         self.dummy.data = self.dataFrame.rename(columns=columns)
-
     def mergeDataFrames(self):
         self.dataFrameFinal = pd.merge(self.dataFrame, self.dataFrameFeeling, how='right', left_on='emocoes_conhecidas', right_on='emocao', suffixes=('', '_conhecida'))
         self.dataFrameFinal = pd.merge(self.dataFrameFinal, self.dataFrameFeeling, how='right', left_on='emocoes_lembranca_passado', right_on='emocao', suffixes=('', '_lembranca_passado'))
