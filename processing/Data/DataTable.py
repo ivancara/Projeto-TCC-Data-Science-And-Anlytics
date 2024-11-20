@@ -36,29 +36,7 @@ class DataTable:
         self.dummyFeeling.getDummy('tipo', applyMapping=self.normalizeUtils.dummyFeelingType)
         self.dummyFeeling.getDummy('emocao', applyMapping=self.normalizeUtils.normalizeString)
     def rename(self):
-        columns = {
-                        'Carimbo de data/hora':'data_resposta'
-                        ,'Li o Termo acima e concordo':'aceitou'
-                        ,'Qual  o seu gênero?':'genero'
-                        ,'Qual é a sua faixa etária?':'faixa_etaria'
-                        ,'Qual é o seu nível de escolaridade?':'escolaridade'
-                        ,'Qual é o seu estado civil?':'estado_civil'
-                        ,'Qual é a sua renda familiar mensal?':'renda_familiar_mensal'
-                        ,'Qual estado que você reside?':'estado'
-                        ,'Você ja foi diagnosticada(o) com depressão?':'possui_depressao'
-                        ,'Você acredita que lembranças passadas podem refletir suas decisões atualmente?':'lembrancas_afetam_decisoes'
-                        ,'Você acredita que lembranças da sua infância refletem suas decisões atualmente?':'lembrancas_infancia_afetam_decisoes'
-                        ,'Você consegue identificar suas emoções?':'identifica_emocoes'
-                        ,'Você acredita que a prática de atividades físicas podem ajudar no tratamento da saúde mental?':'atividade_fisica'
-                        ,'Você faz terapia com um profissional regularmente?':'terapia'
-                        ,'Cite até 3 emoções que você consiga lembrar (Separadas por vírgula \',\').':'emocoes_conhecidas'
-                        ,'Descreva uma lembrança do seu passado que pode ter refletido em alguma decisão atual.':'descricao_lembranca_passado'
-                        ,'Com base nas emoções listadas abaixo, qual delas se encaixa com a lembrança na época do ocorrido?':'emocoes_lembranca_passado'
-                        ,'Com base nas emoções listadas abaixo, qual delas se encaixa com a lembrança atualmente?':'emocoes_lembranca_transformada'
-                        ,'Descreva uma situação ocorrida atualmente que pode refletir em suas decisões futuras':'lembranca_atual_futuro'
-                        ,'Com base nas emoções listadas abaixo, qual delas se encaixa com a situação no momento em que ocorreu?':'emocoes_lembranca_atual'
-                        ,'Com base nas emoções listadas abaixo, qual delas você acredita que pode sentir no futuro quando se lembrar deste ocorrido?':'emocoes_lembranca_atual_transformada_futuro'
-                        }
+        columns = self.constantsManagement.REFACTOR_FIELDS_NAME
         self.dummy.data = self.dataFrame.rename(columns=columns)
     def mergeDataFrames(self):
         self.dataFrameFinal = pd.merge(self.dataFrame, self.dataFrameFeeling, how='right', left_on='emocoes_conhecidas', right_on='emocao', suffixes=('', '_conhecida'))

@@ -6418,3 +6418,5 @@ processamento/DepressionAnalysis/__pycache__/PredictDepression.cpython-312.pyc
 processamento/Utils/__pycache__/DataSplitUtils.cpython-312.pyc
 processing/DepressionAnalysis/__pycache__/TrainingDepression.cpython-312.pyc
 *.pyc
+build/*
+dist/*
