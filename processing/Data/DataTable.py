@@ -20,7 +20,7 @@ class DataTable:
         self.dummy.getDummy('estado_civil')
         self.dummy.getDummy('renda_familiar_mensal')
         self.dummy.getDummy('possui_depressao', applyMapping=self.normalizeUtils.Sim2Binary)
-        self.dummy.getDummy('terapia', applyMapping=self.normalizeUtils.Sim2Binary)
+        self.dummy.getDummy('faz_terapia_regularmente', applyMapping=self.normalizeUtils.Sim2Binary)
         self.dummy.splitColumn('emocoes_conhecidas', ',| e | E ')
         self.dummy.getDummy('emocoes_conhecidas', applyMapping=self.normalizeUtils.normalizeString)
         self.dummy.splitColumn('emocoes_lembranca_passado', ';')

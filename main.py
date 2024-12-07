@@ -91,9 +91,17 @@ class Main:
                     case 7:
                         fileUtilsFinal=FileUtils(fileName=self.constantManagement.DATA_FINAL, deviceUtils=self.deviceUtils, constantsManagement=self.constantManagement)
                         fileUtilsFeelings=FileUtils(fileName=self.constantManagement.EMOTIONS_FILE, deviceUtils=self.deviceUtils, constantsManagement=self.constantManagement)
-                        data = DataTable(fileUtils=self.fileUtils, constantManagement=self.constantManagement, normalizeUtils=self.normalizeUtils, fileUtilsFinal=fileUtilsFinal, fileUtilsFeelings=fileUtilsFeelings)
-                        addTextFeelingsAnalysis = self.fileUtils.hasFile(self.constantManagement.MODEL_FEELINGS_ANALYSIS_PATH)
-                        addDepressionAnalysis = self.fileUtils.hasFile(self.constantManagement.MODEL_DEPRESSION_ANALYSIS_PATH) 
+                        data = DataTable(fileUtils=self.fileUtils, constantsManagement=self.constantManagement, normalizeUtils=self.normalizeUtils, fileUtilsFinal=fileUtilsFinal, fileUtilsFeelings=fileUtilsFeelings)
+                        addTextFeelingsAnalysis = False
+                        addDepressionAnalysis = False
+                        try: 
+                            addTextFeelingsAnalysis = self.fileUtils.hasFile(self.constantManagement.MODEL_FEELINGS_ANALYSIS_PATH)
+                        except Exception as e:
+                            print('Feeling analysis model not found')
+                        try: 
+                            addDepressionAnalysis = self.fileUtils.hasFile(self.constantManagement.MODEL_DEPRESSION_ANALYSIS_PATH) 
+                        except Exception as e:
+                            print('Depression analysis model not found')
                         data.writeDataTableIntoFile(addTexAnalysisPredictedFields=addTextFeelingsAnalysis, addDepressionAnalysisPredictedFields=addDepressionAnalysis)
                         pass
                     case 8:
