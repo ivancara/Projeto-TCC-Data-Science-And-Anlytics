@@ -6,8 +6,9 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.model_selection import GridSearchCV, learning_curve, cross_val_score
-from sklearn.metrics import accuracy_score, classification_report, mean_squared_error, r2_score
+from sklearn.model_selection import GridSearchCV
+from processing.Statistics.Metrics import Metrics
+import pandas as pd
 import numpy as np
 class TrainingDepression:
     def __init__(self, dataSplitUtils, constantsManagement, fileUtils) -> None:
@@ -18,34 +19,38 @@ class TrainingDepression:
         self.X_train, self.X_test, self.y_train, self.y_test = dataSplitUtils.split_data(data)
         self.model = None
 
-        self.target = data.iloc[:, -1]
-        self.features = data.iloc[:, :-1]
+        self.target = dataSplitUtils.target
+        self.features = dataSplitUtils.features
+        self.metrics = Metrics()
     
     def scalar(self):
         # Escalar os dados
         scaler = StandardScaler()
-        X_train = scaler.fit_transform(X_train)
-        X_test = scaler.transform(X_test)
+        self.X_train = scaler.fit_transform(self.X_train)
+        self.X_test = scaler.transform(self.X_test)
     
     def train(self):
+        self.fileUtils.deleteFile(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         self.scalar()
         models = self.getModels()
         # Avaliar os modelos usando GridSearchCV e plotar gráficos de treino e teste
         results = {}
+        max_best_score = 0
         for model_name, model_info in models.items():
             clf = GridSearchCV(model_info['model'], model_info['params'], cv=5, scoring='accuracy')
             clf.fit(self.X_train, self.y_train)
             y_pred_train = clf.predict(self.X_train)
             y_pred_test = clf.predict(self.X_test)
-            accuracy_train = accuracy_score(self.y_train, y_pred_train)
-            accuracy_test = accuracy_score(self.y_test, y_pred_test)
-            mse = mean_squared_error(self.y_test, y_pred_test)
-            r2 = r2_score(self.y_test, y_pred_test)
+            accuracy_train = self.metrics.acuracy_score(self.y_train, y_pred_train)
+            accuracy_test = self.metrics.acuracy_score(self.y_test, y_pred_test)
+            mse = self.metrics.mean_squared_error(self.y_test, y_pred_test)
+            r2 = self.metrics.r2_score(self.y_test, y_pred_test)
             overfitting = accuracy_train - accuracy_test
-            cross_val_scores = cross_val_score(clf.best_estimator_, self.X_train, self.y_train, cv=5, scoring='accuracy')
-            cross_val_mean = np.mean(cross_val_scores)
+            cross_val_scores = self.metrics.cross_validation_score(clf.best_estimator_, self.X_train, self.y_train)
+            cross_val_mean = self.metrics.mean(cross_val_scores)
             best_estimator_score = accuracy_test + r2 - mse - overfitting + cross_val_mean
             results[model_name] = {
+                'model_name': model_name,
                 'best_params': clf.best_params_,
                 'accuracy_train': accuracy_train,
                 'accuracy_test': accuracy_test,
@@ -53,14 +58,17 @@ class TrainingDepression:
                 'r2': r2,
                 'overfitting': overfitting,
                 'cv_mean_acc': cross_val_mean,
-                'classification_report': classification_report(self.y_test, y_pred_test, output_dict=True),
-                'save_path': f'{model_name}_learning_curve.png',
-                'best_estimator': best_estimator_score,
-                'model': y_pred_train
+                'classification_report': self.metrics.classification_report(self.y_test, y_pred_test),
+                'best_estimator': best_estimator_score
             }
-        self.model = self.selectBestModel(results)
-        self.fileUtils.writeFile(self.model)
-        self.model.save(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+            if(best_estimator_score > max_best_score):
+                max_best_score = best_estimator_score
+                self.model = clf
+        #parse results into a dataframe
+        results = pd.DataFrame(results).T
+        results = results.sort_values(by='best_estimator', ascending=False)
+        self.fileUtils.writeDataframeFile(results, self.constantsManagement.RESULTS_DEPRESSION_ANALYSIS_PATH)
+        self.fileUtils.saveModel(self.model, self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         return results
 
     def getModels(self):
@@ -147,12 +155,7 @@ class TrainingDepression:
 
         return models
     
-    def selectBestModel(self, results):
-        best_model_name = max(results, key=lambda x: results[x]['best_estimator'])
-        best_model_info = results[best_model_name]
-        return best_model_info['model']
-    
     def sumary(self):
-        self.fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        self.fileUtils.loadModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         return self.model.summary()
     

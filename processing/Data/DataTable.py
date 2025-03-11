@@ -42,11 +42,12 @@ class DataTable:
     def addDepressionAnalysisPredictedFields(self):
         self.dummyFinal.getDummy('possui_depressao_predicted', applyMapping=self.normalizeUtils.predictDepression(self.dataFrameFinal))     
     
-    def writeDataTableIntoFile(self, addDepressionAnalysisPredictedFields=False):
+    def writeDataTableIntoFile(self):
         self.rename()
         self.dummies()
         self.mergeDataFrames()
         self.dummyFinal = Dummy(self.dataFrameFinal)
+        addDepressionAnalysisPredictedFields = self.fileUtils.hasFile(self.constantManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         if addDepressionAnalysisPredictedFields:
             self.addDepressionAnalysisPredictedFields()
         self.fileUtils.writeFile(self.dataFrame)

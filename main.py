@@ -25,9 +25,7 @@ class Main:
             print("-"*34)
             print("1 - Process Data")
             print("2 - Training Depression Analysis")
-            print("3 - Predict Depression Analysis")
- 
-            print("4 - Exit")
+            print("3 - Exit")
             print("-"*34)
             option = int(input("Choose an option: "))
             try:
@@ -36,13 +34,7 @@ class Main:
                         fileUtilsFinal=FileUtils(fileName=self.constantManagement.DATA_FINAL, deviceUtils=self.deviceUtils, constantsManagement=self.constantManagement)
                         fileUtilsFeelings=FileUtils(fileName=self.constantManagement.EMOTIONS_FILE, deviceUtils=self.deviceUtils, constantsManagement=self.constantManagement)
                         data = DataTable(fileUtils=self.fileUtils, constantsManagement=self.constantManagement, normalizeUtils=self.normalizeUtils, fileUtilsFinal=fileUtilsFinal, fileUtilsFeelings=fileUtilsFeelings)
-                        addDepressionAnalysis = False
-
-                        try: 
-                            addDepressionAnalysis = self.fileUtils.hasFile(self.constantManagement.MODEL_DEPRESSION_ANALYSIS_PATH) 
-                        except Exception as e:
-                            print('Depression analysis model not found')
-                        data.writeDataTableIntoFile(addDepressionAnalysisPredictedFields=addDepressionAnalysis)
+                        data.writeDataTableIntoFile()
                         pass
                     case 2:
                         file = FileUtils(fileName=self.constantManagement.WRANGLED_DATA_FINAL, deviceUtils=self.deviceUtils, constantsManagement=self.constantManagement)
@@ -50,9 +42,6 @@ class Main:
                         training.train()
                         pass
                     case 3:
-
-                        pass
-                    case 4:
                         exit()
                     case _:
                         print("Invalid option")

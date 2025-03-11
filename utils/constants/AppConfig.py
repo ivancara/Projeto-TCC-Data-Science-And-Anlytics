@@ -3,8 +3,8 @@ class AppConfig:
     BATCH_SIZE = 350
     MAX_LEN = 50
     RANDOM_SEED = 42
-    MODEL_FEELINGS_ANALYSIS_PATH='./data/models/feeling_analysis.bin'
-    MODEL_DEPRESSION_ANALYSIS_PATH='./data/models/depression.bin'
+    MODEL_DEPRESSION_ANALYSIS_PATH='./data/models/depression.pkl'
+    RESULTS_DEPRESSION_ANALYSIS_PATH='./data/results/results.csv'
     PREDICTED_DEPRESSION_FILE = 'depression_test_predicted.csv'
     FILE_DATA = 'dados_iniciais.csv'
     DIRECTORY_DATA = './data/files/'

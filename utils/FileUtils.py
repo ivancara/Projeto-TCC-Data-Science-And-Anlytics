@@ -1,7 +1,6 @@
 
 import pandas as pd
-import statsmodels.api as sm 
-import torch
+import joblib
 from pathlib import Path
 class FileUtils():
     def __init__(self, deviceUtils, constantsManagement, fileName=None) -> None:
@@ -23,17 +22,27 @@ class FileUtils():
         return pd.read_csv(file, sep=sep, encoding='utf-8')
     
     def writeFile(self, dataFrame):
-        return dataFrame.to_csv(self.file_out, sep=';', encoding='utf-8',index=False, header=True)
+        file = pd.DataFrame(data=dataFrame.flatten())
+        return file.to_csv(self.file_out, sep=';', encoding='utf-8',index=False, header=True)
     
-    def loadModelStatsModel(self, fileName):
-        if self.hasFile(fileName):
-            return sm.load(fileName)
+    def writeDataframeFile(self, dataFrame, fileName):
+        return dataFrame.to_csv(fileName, sep=';', encoding='utf-8',index=False, header=True)
+    
+    def saveModel(self, model, fileName):
+        if not self.hasFile(fileName):
+            return joblib.dump(model, self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         else:
             return None
     
-    def loadTorchModel(self, fileName):
+    def deleteFile(self, fileName):
         if self.hasFile(fileName):
-            return torch.load(fileName, map_location=self.deviceUtils.get_device())
+            return Path(fileName).unlink()
+        else:
+            return    
+    
+    def loadModel(self, fileName):
+        if self.hasFile(fileName):
+            return joblib.load(fileName)
         else:
             return None
         
@@ -42,4 +51,4 @@ class FileUtils():
         if my_file.is_file():
             return True
         else:
-            raise ValueError("File not found")
+            return False

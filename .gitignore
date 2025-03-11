@@ -6420,3 +6420,4 @@ processing/DepressionAnalysis/__pycache__/TrainingDepression.cpython-312.pyc
 *.pyc
 build/*
 dist/*
+data/models/depression.pkl
