@@ -18,8 +18,8 @@ class Chart:
         plt.legend(loc='best')
         plt.savefig(f'{self.constantsManagement.RESULTS_PATH}{model_name}_{statistc_name}.png')
         
-    def heatmap(self, data, model_name, title, x_label, y_label, statistic_name):
-        plt.figure(figsize=(10, 5))
+    def heatmap(self, data, model_name, title, x_label, y_label, statistic_name, figure_size):
+        plt.figure(figsize=figure_size)
         sns.heatmap(data, annot=True, cmap='coolwarm')
         plt.xlabel(x_label)
         plt.ylabel(y_label)
