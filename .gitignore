@@ -6421,3 +6421,24 @@ processing/DepressionAnalysis/__pycache__/TrainingDepression.cpython-312.pyc
 build/*
 dist/*
 data/models/depression.pkl
+data/results/AdaBoost_confusion_matrix.png
+data/results/AdaBoost_learning_curve.png
+data/results/correlation_correlation_matrix.png
+data/results/Decision Tree_confusion_matrix.png
+data/results/Decision Tree_learning_curve.png
+data/results/Extra Trees_confusion_matrix.png
+data/results/Extra Trees_learning_curve.png
+data/results/Gradient Boosting_confusion_matrix.png
+data/results/Gradient Boosting_learning_curve.png
+data/results/K-Nearest Neighbors_confusion_matrix.png
+data/results/K-Nearest Neighbors_learning_curve.png
+data/results/Logistic Regression_confusion_matrix.png
+data/results/Logistic Regression_learning_curve.png
+data/results/Naive Bayes_confusion_matrix.png
+data/results/Naive Bayes_learning_curve.png
+data/results/Random Forest_confusion_matrix.png
+data/results/Random Forest_learning_curve.png
+data/results/Ridge Classifier_confusion_matrix.png
+data/results/Ridge Classifier_learning_curve.png
+data/results/SVM_confusion_matrix.png
+data/results/SVM_learning_curve.png

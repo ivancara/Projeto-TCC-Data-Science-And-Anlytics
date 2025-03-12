@@ -25,24 +25,19 @@ warnings.filterwarnings("ignore")
 sns.set_palette("muted")
 
 # Carregar o arquivo CSV
-file_path = 'data/files/out_out_dados.csv'
+file_path = 'data/files/out_dados.csv'
 df = pd.read_csv(file_path, sep=';')
 
 # Substituir 'True' e 'False' por 1 e 0
 df = df.replace({'True': 1, 'False': 0})
 
 # Identificar colunas que contêm datas
-date_columns = ['emocao','data_resposta','aceitou','estado','emocoes_conhecidas','descricao_lembranca_passado','emocoes_lembranca_passado','emocoes_lembranca_transformada','lembranca_atual_futuro','emocoes_lembranca_atual','emocoes_lembranca_atual_transformada_futuro','emocao_lembranca_passado','emocao_lembranca_transformada','emocao_lembranca_atual','emocao_lembranca_atual_transformada_futuro']
-
-# Remover colunas de datas
-df = df.drop(columns=date_columns)
 
 # Calcular a correlação de Pearson
 correlation_matrix = df.corr(method='pearson')
 
 # Selecionar colunas com correlação mínima de 0.7 com a variável alvo
-target_correlation = correlation_matrix.iloc[:, -1].abs()
-selected_columns = target_correlation[target_correlation >= 0.7].index
+selected_columns = correlation_matrix[correlation_matrix >= 0.7].index
 
 # Filtrar o DataFrame para incluir apenas as colunas selecionadas
 df_filtered = df[selected_columns]
@@ -52,7 +47,7 @@ correlation_matrix = df_filtered.corr(method='pearson')
 plt.figure(figsize=(12, 10))
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
 plt.title('Heatmap da Correlação de Pearson')
-plt.savefig('correlation_heatmap.png')
+#plt.savefig('correlation_heatmap.png')
 plt.show()
 
 # Separar características e alvo
@@ -197,7 +192,7 @@ for model_name, model_info in models.items():
     plt.ylabel('Score')
     plt.title(f'{model_name} Learning Curve\nAccuracy: {accuracy_test:.4f}, MSE: {mse:.4f}, R²: {r2:.4f}, Best Estimator: {best_estimator_score:.4f}')
     plt.legend(loc='best')
-    plt.savefig(f'{model_name}_learning_curve.png')
+    #plt.savefig(f'{model_name}_learning_curve.png')
     plt.show()
 
 # Selecionar o melhor modelo
@@ -275,7 +270,7 @@ table[0,3].set_height(0.1)
 table[0,4].set_height(0.1)
 table[0,5].set_height(0.1)
 table[0,6].set_height(0.1)
-plt.savefig('mse_r2_table.png')
+#plt.savefig('mse_r2_table.png')
 plt.show()
 
 # Adicionar imagem da tabela
