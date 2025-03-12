@@ -11,7 +11,7 @@ class SummaryDepressionAnalysis:
         self.jsonutils = JsonUtils()
 
     def summary(self):
-        
+        #Correlation Matrix
         self.chart.heatmap(self.correlation.getCorrelationMatrix(self.root_file), model_name='Correlation Matrix', title='Correlation Matrix', x_label='Features', y_label='Features', statistic_name='', figure_size=(50, 45))
         for key, value in self.file.iterrows():
             #Learning Curve
