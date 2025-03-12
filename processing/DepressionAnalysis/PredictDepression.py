@@ -1,5 +1,7 @@
 
 import numpy as np
+import warnings
+warnings.filterwarnings('ignore')
 class PredictDepression:
     def __init__(self, constantsManagement, fileUtils) -> None:
         self.constantsManagement = constantsManagement

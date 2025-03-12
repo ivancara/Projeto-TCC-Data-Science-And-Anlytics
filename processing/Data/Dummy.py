@@ -1,5 +1,7 @@
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
+import warnings
+warnings.filterwarnings('ignore')
 class Dummy():
 
     def __init__(self, data) -> None:

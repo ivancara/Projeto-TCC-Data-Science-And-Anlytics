@@ -10,6 +10,9 @@ from sklearn.model_selection import GridSearchCV
 from processing.Statistics.Metrics import Metrics
 import pandas as pd
 import numpy as np
+from utils.JsonUtils import JsonUtils
+import warnings
+warnings.filterwarnings('ignore')
 class TrainingDepression:
     def __init__(self, dataSplitUtils, constantsManagement, fileUtils) -> None:
         data = fileUtils.readFile(';')
@@ -22,6 +25,7 @@ class TrainingDepression:
         self.target = dataSplitUtils.target
         self.features = dataSplitUtils.features
         self.metrics = Metrics()
+        self.jsonutils = JsonUtils()
     
     def scalar(self):
         # Escalar os dados
@@ -49,17 +53,23 @@ class TrainingDepression:
             cross_val_scores = self.metrics.cross_validation_score(clf.best_estimator_, self.X_train, self.y_train)
             cross_val_mean = self.metrics.mean(cross_val_scores)
             best_estimator_score = accuracy_test + r2 - mse - overfitting + cross_val_mean
+            lc_train_sizes, lc_train_scores, lc_test_scores = self.metrics.learning_curve(clf.best_estimator_, self.X_train, self.y_train)
+
             results[model_name] = {
                 'model_name': model_name,
-                'best_params': clf.best_params_,
+                'best_params': self.jsonutils.jsonToString(clf.best_params_),
                 'accuracy_train': accuracy_train,
                 'accuracy_test': accuracy_test,
+                'lc_train_sizes': self.jsonutils.jsonToString(lc_train_sizes.tolist()),
+                'lc_train_scores': self.jsonutils.jsonToString(self.metrics.mean(scores=lc_train_scores,axis=1).tolist()),
+                'lc_test_scores': self.jsonutils.jsonToString(self.metrics.mean(scores=lc_test_scores, axis=1).tolist()),
                 'mse': mse,
                 'r2': r2,
                 'overfitting': overfitting,
                 'cv_mean_acc': cross_val_mean,
-                'classification_report': self.metrics.classification_report(self.y_test, y_pred_test),
-                'best_estimator': best_estimator_score
+                'classification_report': self.jsonutils.jsonToString(self.metrics.classification_report(self.y_test, y_pred_test)),
+                'best_estimator': best_estimator_score,
+                'confusion_matrix': self.jsonutils.jsonToString(self.metrics.confusion_matrix(self.y_test, y_pred_test).tolist())
             }
             if(best_estimator_score > max_best_score):
                 max_best_score = best_estimator_score

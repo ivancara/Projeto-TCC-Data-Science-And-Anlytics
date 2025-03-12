@@ -1,5 +1,8 @@
+import warnings
+warnings.filterwarnings('ignore')
+
 class Correlation:
-    def __init__(self, constantsManagement):
+    def __init__(self, constantsManagement) -> None:
         self.constantsManagement = constantsManagement
 
     def pearson(self):

@@ -1,5 +1,7 @@
 from sklearn.model_selection import train_test_split
 from processing.Statistics.Correlation import Correlation
+import warnings
+warnings.filterwarnings('ignore')
 class DataSplitUtils:
     def __init__(self, constantsManagement) -> None:
         self.random_state = constantsManagement.RANDOM_SEED

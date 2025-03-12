@@ -1,7 +1,9 @@
 import unicodedata
 from processing.DepressionAnalysis.PredictDepression import PredictDepression
+import warnings
+warnings.filterwarnings('ignore')
 class NormalizeUtils():
-    def __init__(self, constantsManagement, fileUtils, deviceUtils) -> None:
+    def __init__(self, constantsManagement, fileUtils) -> None:
         self.PredictDepression = PredictDepression(constantsManagement=constantsManagement, fileUtils=fileUtils)
         pass
      

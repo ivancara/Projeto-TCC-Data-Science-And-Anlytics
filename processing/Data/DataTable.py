@@ -1,5 +1,7 @@
 from processing.Data.Dummy import Dummy
 import pandas as pd
+import warnings
+warnings.filterwarnings('ignore')
 class DataTable:
     def __init__(self, fileUtils,constantsManagement, normalizeUtils, fileUtilsFinal, fileUtilsFeelings) -> None:
         self.normalizeUtils = normalizeUtils

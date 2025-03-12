@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings('ignore')
 class AppConfig:
     EPOCHS = 30000
     BATCH_SIZE = 350
@@ -6,6 +8,7 @@ class AppConfig:
     MODEL_DEPRESSION_ANALYSIS_PATH='./data/models/depression.pkl'
     RESULTS_DEPRESSION_ANALYSIS_PATH='./data/results/results.csv'
     PREDICTED_DEPRESSION_FILE = 'depression_test_predicted.csv'
+    RESULTS_PATH = './data/results/'
     FILE_DATA = 'dados_iniciais.csv'
     DIRECTORY_DATA = './data/files/'
     EMOTIONS_FILE = 'emocoes.csv'
