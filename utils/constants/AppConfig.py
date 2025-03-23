@@ -17,6 +17,7 @@ class AppConfig:
     TRAIN_PERCENTAGE = 0.7
     TEST_PERCENTAGE = 0.2
     LEARNING_RATE=3e-5
+    TARGET='possui_depressao'
     CORRELATION='pearson'
     REFACTOR_FIELDS_NAME = {
                         'Carimbo de data/hora':'data_resposta'

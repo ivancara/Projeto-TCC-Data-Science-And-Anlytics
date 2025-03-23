@@ -134,7 +134,7 @@ class TrainingDepression:
                 }
             },
             'SVM': {
-                'model': SVC(),
+               'model': SVC(probability=True),
                 'params': {
                     'C': [0.1, 1, 10, 100],
                     'kernel': ['linear', 'rbf', 'poly'],
