@@ -12,13 +12,13 @@ class DataSplitUtils:
         self.target = None
         pass
 
-    def split_data(self, data, size=0.2):
+    def split_data(self, data, size=0.4):
         correlation_matrix = self.correlation.getCorrelationMatrix(data)
         
         selected_columns = correlation_matrix.columns[correlation_matrix.apply(lambda x: any((x >= 0.7) & (x.index != x.name)), axis=0)]
 
         df_filtered = data[selected_columns]
-        self.features = df_filtered.iloc[:, :-1]
+        self.features = df_filtered
         self.target = data[self.constantsManagement.TARGET]
         X_train, X_test, y_train, y_test = train_test_split(self.features,self.target, test_size=size, random_state=self.random_state)
         return X_train, X_test, y_train, y_test 

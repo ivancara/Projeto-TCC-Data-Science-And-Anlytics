@@ -49,7 +49,7 @@ class DataTable:
         self.dummies()
         self.mergeDataFrames()
         self.dummyFinal = Dummy(self.dataFrameFinal)
-        addDepressionAnalysisPredictedFields = self.fileUtils.hasFile(self.constantManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        addDepressionAnalysisPredictedFields = self.fileUtils.hasFile(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         if addDepressionAnalysisPredictedFields:
             self.addDepressionAnalysisPredictedFields()
         self.fileUtils.writeFile(self.dataFrame)

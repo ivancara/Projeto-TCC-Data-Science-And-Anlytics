@@ -28,7 +28,7 @@ class FileUtils():
         return pd.read_csv(path, sep=sep, encoding='utf-8')
     
     def writeFile(self, dataFrame):
-        file = pd.DataFrame(data=dataFrame.flatten())
+        file = pd.DataFrame(data=dataFrame)
         return file.to_csv(self.file_out, sep=';', encoding='utf-8',index=False, header=True)
     
     def writeDataframeFile(self, dataFrame, fileName):

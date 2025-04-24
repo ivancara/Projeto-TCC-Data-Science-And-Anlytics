@@ -16,6 +16,7 @@ warnings.filterwarnings('ignore')
 class TrainingDepression:
     def __init__(self, dataSplitUtils, constantsManagement, fileUtils) -> None:
         data = fileUtils.readFile(';')
+        self.describe = data.describe()
         self.fileUtils = fileUtils
         self.constantsManagement = constantsManagement
         
@@ -69,7 +70,8 @@ class TrainingDepression:
                 'cv_mean_acc': cross_val_mean,
                 'classification_report': self.jsonutils.jsonToString(self.metrics.classification_report(self.y_test, y_pred_test)),
                 'best_estimator': best_estimator_score,
-                'confusion_matrix': self.jsonutils.jsonToString(self.metrics.confusion_matrix(self.y_test, y_pred_test).tolist())
+                'confusion_matrix': self.jsonutils.jsonToString(self.metrics.confusion_matrix(self.y_test, y_pred_test).tolist()),
+                'describe': self.describe.to_json(),
             }
             if(best_estimator_score > max_best_score):
                 max_best_score = best_estimator_score
