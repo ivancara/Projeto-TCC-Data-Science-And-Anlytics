@@ -1,49 +1,173 @@
 import statsmodels.formula.api as smf
-import statsmodels.api as sm 
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, ExtraTreesClassifier
+from sklearn.linear_model import LogisticRegression, RidgeClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import GridSearchCV
+from processing.Statistics.Metrics import Metrics
 import pandas as pd
 import numpy as np
-from sklearn.metrics import accuracy_score,recall_score
+from utils.JsonUtils import JsonUtils
+import warnings
+warnings.filterwarnings('ignore')
 class TrainingDepression:
-    def __init__(self, dataSplitUtils, constantsManagement, fileUtils, target=None, features=[]) -> None:
+    def __init__(self, dataSplitUtils, constantsManagement, fileUtils) -> None:
         data = fileUtils.readFile(';')
+        self.describe = data.describe()
         self.fileUtils = fileUtils
         self.constantsManagement = constantsManagement
-        self.df_train, self.df_test = dataSplitUtils.split_data(data, size=constantsManagement.TRAIN_PERCENTAGE)
-        self.df_val, self.df_test = dataSplitUtils.split_data(self.df_test, size=constantsManagement.TEST_PERCENTAGE)
+        
+        self.X_train, self.X_test, self.y_train, self.y_test = dataSplitUtils.split_data(data)
         self.model = None
-        self.target = target
-        self.features = features
 
+        self.target = dataSplitUtils.target
+        self.features = dataSplitUtils.features
+        self.metrics = Metrics()
+        self.jsonutils = JsonUtils()
+    
+    def scalar(self):
+        # Escalar os dados
+        scaler = StandardScaler()
+        self.X_train = scaler.fit_transform(self.X_train)
+        self.X_test = scaler.transform(self.X_test)
+    
     def train(self):
-        self.model = smf.glm(formula=f'{self.target} ~ {' + '.join(self.features)}'	
-                                 , data=self.df_train
-                                 , family=sm.families.Binomial())
-        self.model = self.model.fit()
-        self.df_train['possui_depressao_predicted'] = np.round(self.model.predict(),0).astype(int)
-        self.fileUtils.writeFile(self.df_train)
-        self.model.save(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        self.fileUtils.deleteFile(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        self.scalar()
+        models = self.getModels()
+        # Avaliar os modelos usando GridSearchCV e plotar gráficos de treino e teste
+        results = {}
+        max_best_score = 0
+        for model_name, model_info in models.items():
+            clf = GridSearchCV(model_info['model'], model_info['params'], cv=5, scoring='accuracy')
+            clf.fit(self.X_train, self.y_train)
+            y_pred_train = clf.predict(self.X_train)
+            y_pred_test = clf.predict(self.X_test)
+            accuracy_train = self.metrics.acuracy_score(self.y_train, y_pred_train)
+            accuracy_test = self.metrics.acuracy_score(self.y_test, y_pred_test)
+            mse = self.metrics.mean_squared_error(self.y_test, y_pred_test)
+            r2 = self.metrics.r2_score(self.y_test, y_pred_test)
+            overfitting = accuracy_train - accuracy_test
+            cross_val_scores = self.metrics.cross_validation_score(clf.best_estimator_, self.X_train, self.y_train)
+            cross_val_mean = self.metrics.mean(cross_val_scores)
+            best_estimator_score = accuracy_test + r2 - mse - overfitting + cross_val_mean
+            lc_train_sizes, lc_train_scores, lc_test_scores = self.metrics.learning_curve(clf.best_estimator_, self.X_train, self.y_train)
 
+            results[model_name] = {
+                'model_name': model_name,
+                'best_params': self.jsonutils.jsonToString(clf.best_params_),
+                'accuracy_train': accuracy_train,
+                'accuracy_test': accuracy_test,
+                'lc_train_sizes': self.jsonutils.jsonToString(lc_train_sizes.tolist()),
+                'lc_train_scores': self.jsonutils.jsonToString(self.metrics.mean(scores=lc_train_scores,axis=1).tolist()),
+                'lc_test_scores': self.jsonutils.jsonToString(self.metrics.mean(scores=lc_test_scores, axis=1).tolist()),
+                'mse': mse,
+                'r2': r2,
+                'overfitting': overfitting,
+                'cv_mean_acc': cross_val_mean,
+                'classification_report': self.jsonutils.jsonToString(self.metrics.classification_report(self.y_test, y_pred_test)),
+                'best_estimator': best_estimator_score,
+                'confusion_matrix': self.jsonutils.jsonToString(self.metrics.confusion_matrix(self.y_test, y_pred_test).tolist()),
+                'describe': self.describe.to_json(),
+            }
+            if(best_estimator_score > max_best_score):
+                max_best_score = best_estimator_score
+                self.model = clf
+        #parse results into a dataframe
+        results = pd.DataFrame(results).T
+        results = results.sort_values(by='best_estimator', ascending=False)
+        self.fileUtils.writeDataframeFile(results, self.constantsManagement.RESULTS_DEPRESSION_ANALYSIS_PATH)
+        self.fileUtils.saveModel(self.model, self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        return results
+
+    def getModels(self):
+        # Definir os modelos e os hiperparâmetros para GridSearchCV
+        models = {
+            'Logistic Regression': {
+                'model': LogisticRegression(),
+                'params': {
+                    'C': [0.01, 0.1, 1, 10, 100],
+                    'solver': ['liblinear', 'saga'],
+                    'max_iter': [100, 200, 300]
+                }
+            },
+            'Ridge Classifier': {
+                'model': RidgeClassifier(),
+                'params': {
+                    'alpha': [0.01, 0.1, 1, 10, 100]
+                }
+            },
+            'Random Forest': {
+                'model': RandomForestClassifier(),
+                'params': {
+                    'n_estimators': [50, 100, 200],
+                    'max_depth': [None, 10, 20, 30],
+                    'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4]
+                }
+            },
+            'Gradient Boosting': {
+                'model': GradientBoostingClassifier(),
+                'params': {
+                    'n_estimators': [50, 100, 200],
+                    'learning_rate': [0.01, 0.1, 0.2],
+                    'max_depth': [3, 5, 7],
+                    'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4]
+                }
+            },
+            'AdaBoost': {
+                'model': AdaBoostClassifier(),
+                'params': {
+                    'n_estimators': [50, 100, 200],
+                    'learning_rate': [0.01, 0.1, 0.2]
+                }
+            },
+            'Extra Trees': {
+                'model': ExtraTreesClassifier(),
+                'params': {
+                    'n_estimators': [50, 100, 200],
+                    'max_depth': [None, 10, 20, 30],
+                    'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4]
+                }
+            },
+            'SVM': {
+               'model': SVC(probability=True),
+                'params': {
+                    'C': [0.1, 1, 10, 100],
+                    'kernel': ['linear', 'rbf', 'poly'],
+                    'gamma': ['scale', 'auto']
+                }
+            },
+            'K-Nearest Neighbors': {
+                'model': KNeighborsClassifier(),
+                'params': {
+                    'n_neighbors': [3, 5, 7, 9],
+                    'weights': ['uniform', 'distance'],
+                    'metric': ['euclidean', 'manhattan']
+                }
+            },
+            'Decision Tree': {
+                'model': DecisionTreeClassifier(),
+                'params': {
+                    'max_depth': [None, 10, 20, 30],
+                    'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4]
+                }
+            },
+            'Naive Bayes': {
+                'model': GaussianNB(),
+                'params': {}
+            }
+        }
+
+        return models
+    
     def sumary(self):
-        self.fileUtils.loadModelStatsModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
+        self.fileUtils.loadModel(self.constantsManagement.MODEL_DEPRESSION_ANALYSIS_PATH)
         return self.model.summary()
     
-    def eval(self, cutoff):
-        values = self.df_train['possui_depressao'].values
-        observado =self.df_train['possui_depressao_predicted'].values
-        predicao_binaria = []
-        for item in values:
-            if item < cutoff:
-                predicao_binaria.append(0)
-            else:
-                predicao_binaria.append(1)
-            
-            
-        sensitividade = recall_score(observado, predicao_binaria, pos_label=1)
-        especificidade = recall_score(observado, predicao_binaria, pos_label=0)
-        acuracia = accuracy_score(observado, predicao_binaria)
-
-        # Visualização dos principais indicadores desta matriz de confusão
-        indicadores = pd.DataFrame({'Sensitividade':[sensitividade],
-                                    'Especificidade':[especificidade],
-                                    'Acurácia':[acuracia]})
-        return indicadores

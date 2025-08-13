@@ -1,9 +1,9 @@
 import unicodedata
-from processing.TextAnalysis.PredictFeelingAnalysis import PredictFeelingAnalysis
 from processing.DepressionAnalysis.PredictDepression import PredictDepression
+import warnings
+warnings.filterwarnings('ignore')
 class NormalizeUtils():
-    def __init__(self, constantsManagement, fileUtils, deviceUtils) -> None:
-        self.predictFeelingAnalysis = PredictFeelingAnalysis(constantManagement=constantsManagement, fileUtils=fileUtils, deviceUtils=deviceUtils)
+    def __init__(self, constantsManagement, fileUtils) -> None:
         self.PredictDepression = PredictDepression(constantsManagement=constantsManagement, fileUtils=fileUtils)
         pass
      
@@ -32,10 +32,6 @@ class NormalizeUtils():
 
         # Usa expressão regular para retornar a palavra apenas com números, letras e espaço
         return palavraSemAcento.upper().replace(' ','').replace('.','')
-    
-    def predictFeelings(self, text):
-        predicted = self.predictFeelingAnalysis.predict(str(text))
-        return predicted[0]
-    
+ 
     def predictDepression(self, data):
         return self.PredictDepression.predict(data)

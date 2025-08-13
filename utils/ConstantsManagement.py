@@ -1,7 +1,10 @@
 from utils.constants.AppConfig import AppConfig
+import warnings
+warnings.filterwarnings('ignore')
+import warnings
+warnings.filterwarnings('ignore')
 class ConstantsManagement:
     def __init__(self):
-        # Set constants from separate classes as attributes
         for cls in [AppConfig]:
             for key, value in cls.__dict__.items():
                 if not key.startswith("__"):
